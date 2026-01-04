@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Collaborators - Script2Cinema</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root{ --primary:#ff9800; --dark:#0d1b2a; --bg:#010409; --card:#0d1117; --text:#f0f6fc; --muted:#8b949e; --border:#30363d; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{ font-family:Poppins,sans-serif; background:url('bc 1.jpg') center/cover fixed no-repeat; color:var(--text); }
+
+/* TOAST NOTIFICATION STYLES */
+#toast {
+  visibility: hidden;
+  min-width: 250px;
+  background-color: #28a745;
+  color: #fff;
+  text-align: center;
+  border-radius: 8px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1000;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  font-size: 1rem;
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.5);
+  opacity: 0;
+  transition: opacity 0.5s, bottom 0.5s;
+}
+#toast.show {
+  visibility: visible;
+  opacity: 1;
+  bottom: 50px;
+}
+
+header{ display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; background:var(--dark); border-bottom:1px solid var(--border); }
+.logo{color:var(--primary);font-size:1.5rem;font-weight:700;text-decoration:none}
+.nav-links{display:flex;gap:1.2rem;list-style:none}
+.nav-links a{ color:var(--text); text-decoration:none; padding:.45rem .75rem; border-radius:6px; }
+.nav-links a.active,.nav-links a:hover{ background:var(--primary); color:#000; }
+.user-actions{display:flex;gap:1rem;align-items:center}
+.logout-btn{ background:none; border:1px solid var(--border); color:var(--text); padding:.4rem .9rem; border-radius:6px; cursor:pointer; }
+
+.container{max-width:1280px;margin:2rem auto;padding:0 2rem}
+.page-header h1{font-size:2.2rem}
+.filters{display:flex;gap:1rem;margin:2rem 0}
+.search{ flex:1; padding:.8rem 1rem; background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:6px; }
+.select{ padding:.8rem 1rem; background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:6px; }
+
+.grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; }
+
+/* CARD LINK WRAPPER */
+.card-link { text-decoration: none; color: inherit; display: block; }
+
+.card{ background:rgba(13,17,23,.9); border:1px solid var(--border); border-radius:10px; padding:1.4rem; display:flex; flex-direction:column; justify-content:space-between; transition:.25s; height: 100%; }
+.card:hover{ border-color:var(--primary); transform:translateY(-4px); }
+.card-header{ display:flex; gap:1rem; align-items:center; }
+.avatar{ width:52px; height:52px; border-radius:50%; object-fit:cover; background:#1f2937; display:flex; align-items:center; justify-content:center; }
+.tag{ background:var(--primary); color:#000; font-size:.75rem; padding:.25rem .7rem; border-radius:20px; margin:.2rem; display:inline-block; }
+.bio{ font-size:.9rem; color:var(--muted); margin-top:1rem; border-top:1px solid var(--border); padding-top:.8rem; }
+.btn{ margin-top:1rem; width:100%; padding:.7rem; border-radius:6px; border:none; font-weight:600; cursor:pointer; }
+.connect{background:#007bff;color:#fff}
+.pending{background:#6c757d;color:#fff;cursor:not-allowed}
+.connected{background:var(--primary);color:#000}
+</style>
+</head>
+
+<body>
+
+<header>
+     <a  class="logo" href="dash.html">Script2Cinema</a>
+        <ul class="nav-links">
+            <li><a href="dash.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+      <li><a href="project.html"><i class="fas fa-folder"></i> Projects</a></li>
+      <li><a href="collab.html" class="active"><i class="fas fa-users"></i> Collaborators</a></li>
+      <li><a href="message.html"><i class="fas fa-envelope"></i> Message</a></li>
+      <li><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
+    </ul>
+  <div class="user-actions">
+    <span id="welcome">Welcome</span>
+    <button class="logout-btn" id="logout">Logout</button>
+  </div>
+</header>
+
+<main class="container">
+  <div class="page-header">
+    <h1>Find Collaborators</h1>
+    <p>Connect with filmmakers and creatives.</p>
+  </div>
+
+  <div class="filters">
+    <input class="search" id="search" placeholder="Search by name">
+    <select class="select" id="role">
+      <option value="">All Roles</option>
+      <option>Director</option>
+      <option>Writer</option>
+      <option>Editor</option>
+      <option>Cinematographer</option>
+      <option>Producer</option>
+    </select>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</main>
+
+<div id="toast"><i class="fas fa-check-circle"></i> Request Sent Successfully!</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<script>
+// ---------- FIREBASE INIT ----------
+const firebaseConfig = {
+  apiKey: "AIzaSyAJzGN3RURMAvSSk2OkxTj9I6JMsyrdVEc",
+  authDomain: "script2cinema-86afa.firebaseapp.com",
+  projectId: "script2cinema-86afa",
+  storageBucket: "script2cinema-86afa.appspot.com",
+  messagingSenderId: "709129400285",
+  appId: "1:709129400285:web:8e32274e9c605ffc7ed034"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// ---------- STATE ----------
+let me = null;
+let users = [];
+let connections = {}; 
+
+// ---------- AUTH ----------
+auth.onAuthStateChanged(async user => {
+  if (!user) return location.href = "login.html";
+
+  const snap = await db.collection("users").doc(user.uid).get();
+  me = { uid: user.uid, ...snap.data() };
+  document.getElementById("welcome").textContent = `Welcome, ${me.name}`;
+
+  listenConnections();
+  loadUsers();
+
+  document.getElementById("logout").onclick =
+    () => auth.signOut().then(() => location.href = "login.html");
+});
+
+function listenConnections() {
+  db.collection("connections")
+    .where("participants", "array-contains", me.uid)
+    .onSnapshot(snapshot => {
+      connections = {};
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        const other = d.participants.find(id => id !== me.uid);
+        if(other) connections[other] = d.status;
+      });
+      render();
+    });
+}
+
+async function loadUsers() {
+  const snap = await db.collection("users").get();
+  users = [];
+  snap.forEach(d => {
+    if (d.id !== me.uid) users.push({ uid: d.id, ...d.data() });
+  });
+  render();
+}
+
+// ---------- TOAST HELPER ----------
+function showToast(message) {
+  const t = document.getElementById("toast");
+  t.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+  t.className = "show";
+  setTimeout(() => { t.className = t.className.replace("show", ""); }, 3000);
+}
+
+// ---------- SEND CONNECTION REQUEST ----------
+window.sendRequest = async (targetUid) => {
+  const btn = document.getElementById(`btn-${targetUid}`);
+  if(btn) { btn.disabled = true; btn.innerText = "Sending..."; }
+
+  const connId = [me.uid, targetUid].sort().join("_");
+
+  try {
+      const targetSnap = await db.collection("users").doc(targetUid).get();
+      const targetName = targetSnap.exists ? targetSnap.data().name : "User";
+
+      await db.collection("connections").doc(connId).set({
+        participants: [me.uid, targetUid], 
+        requesterId: me.uid,
+        requesterName: me.name,
+        receiverId: targetUid, 
+        receiverName: targetName,
+        status: "pending",
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+
+      showToast("Request sent successfully!"); // <-- TRIGGER TOAST
+      
+  } catch (error) {
+      console.error(error);
+      alert("Error: " + error.message);
+      if(btn) { btn.disabled = false; btn.innerText = "Connect"; }
+  }
+}
+
+window.openChat = (uid) => {
+  location.href = `message.html?chatWith=${uid}`;
+}
+
+function render() {
+  const grid = document.getElementById("grid");
+  const filter = document.getElementById("search").value.toLowerCase();
+  
+  grid.innerHTML = "";
+
+  users.forEach(u => {
+    if(filter && !u.name.toLowerCase().includes(filter)) return;
+
+    const status = connections[u.uid];
+    let btn = "";
+
+    if (status === "pending") {
+      // NOTE: Added event.preventDefault() to stop profile click
+      btn = `<button class="btn pending" disabled style="background:#6c757d; cursor: not-allowed;" onclick="event.preventDefault()">
+              <i class="fas fa-clock"></i> Request Sent
+            </button>`;
+    } 
+    else if (status === "accepted") {
+      // NOTE: Added event.preventDefault() to stop profile click
+      btn = `<button class="btn connected" onclick="event.preventDefault(); openChat('${u.uid}')" style="background:#28a745; color:white;">
+              <i class="fas fa-comments"></i> Message
+            </button>`;
+    } 
+    else {
+      // NOTE: Added event.preventDefault() to stop profile click
+      btn = `<button id="btn-${u.uid}" class="btn connect" onclick="event.preventDefault(); sendRequest('${u.uid}')" style="background:#007bff; color:white;">
+              <i class="fas fa-user-plus"></i> Connect
+            </button>`;
+    }
+
+    const roles = u.roles || []; 
+    const roleTags = roles.map(r => `<span class="tag">${r}</span>`).join("");
+
+    // --- CARD WITH LINK WRAPPER ---
+    grid.innerHTML += `
+      <a href="profile.html?id=${u.uid}" target="_blank" class="card-link">
+        <div class="card">
+          <div class="card-header">
+            ${u.profilePictureUrl
+              ? `<img src="${u.profilePictureUrl}" class="avatar">`
+              : `<div class="avatar">${u.name[0]}</div>`}
+            <div>
+                <h3 style="margin-bottom:0.2rem">${u.name}</h3>
+                <small style="color:#8b949e">Filmmaker</small>
+            </div>
+          </div>
+          
+          <div class="bio">
+              ${u.aboutMe ? u.aboutMe.substring(0, 100) + (u.aboutMe.length>100?"...":"") : "No bio available."}
+          </div>
+
+          <div style="margin: 1rem 0;">
+              ${roleTags}
+          </div>
+
+          ${btn}
+        </div>
+      </a>`;
+  });
+}
+
+document.getElementById("search").addEventListener("keyup", render);
+</script>
+
+</body>
+</html>

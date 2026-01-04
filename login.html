@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Script2Cinema</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF8C00;
+            --dark-bg: #0a0a0a;
+            --medium-bg: #1a1a1a;
+            --light-text: #f0f0f0;
+            --dark-text: #a0a0a0;
+            --font-family: 'Poppins', sans-serif;
+            --border-color: #30363d;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-family);
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            
+            background-image: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url('lo-sign bc.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            
+        }
+
+        header {
+            background-color: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .logo { height: 70px; }
+        .nav-links { list-style: none; display: flex; align-items: center; }
+        .nav-links li { margin-left: 2rem; }
+        .nav-links a { text-decoration: none; color: var(--light-text); font-weight: 500; transition: color 0.3s ease; }
+        .nav-links a:hover { color: var(--primary-color); }
+        .nav-buttons .btn { margin-left: 1rem; }
+        .btn { display: inline-block; padding: 0.6rem 1.5rem; border-radius: 5px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; border: 2px solid transparent; }
+        .btn-outline { border-color: var(--primary-color); color: var(--primary-color); }
+        .btn-outline:hover { background-color: var(--primary-color); color: white; }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 101px); 
+            padding: 2rem;
+        }
+        .login-box {
+            background-color: var(--medium-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        h2 { font-size: 2rem; margin-bottom: 1.5rem; color: var(--primary-color); }
+        .input-group { margin-bottom: 1.2rem; text-align: left; }
+        .input-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .input-group input { width: 100%; padding: 0.8rem; background-color: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 6px; color: var(--light-text); font-size: 1rem; }
+        .btn-submit { width: 100%; padding: 0.9rem; background-color: var(--primary-color); color: var(--dark-bg); border: none; border-radius: 6px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .form-link { margin-top: 1.5rem; color: var(--dark-text); }
+        .form-link a { color: var(--primary-color); text-decoration: none; font-weight: 500; }
+        .error-message { color: #e74c3c; margin-top: 1rem; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html"><img src="logos.png" alt="Script2Cinema Logo" class="logo"></a>
+            <ul class="nav-links">
+                <li><a href="index.html#hero">Home</a></li>
+                <li><a href="index.html#about">About Us</a></li>
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="index.html#story">Our Story</a></li>
+                <li><a href="index.html#mission">Our Mission</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <a href="login.html" class="btn btn-outline">Log In</a>
+                <a href="signup.html" class="btn btn-primary">Sign Up</a>
+            </div>
+        </nav>
+    </header>
+    <main class="auth-container">
+        <div class="login-box">
+            <h2>Login</h2>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn-submit">Login</button>
+                <p id="login-error" class="error-message" style="display: none;"></p>
+            </form>
+            <p class="form-link">Don't have an account? <a href="signup.html">Sign Up</a></p>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJzGN3RURMAvSSk2OkxTj9I6JMsyrdVEc",
+            authDomain: "script2cinema-86afa.firebaseapp.com",
+            projectId: "script2cinema-86afa",
+            storageBucket: "script2cinema-86afa.appspot.com",
+            messagingSenderId: "709129400285",
+            appId: "1:709129400285:web:8e32274e9c605ffc7ed034",
+            measurementId: "G-DJS647QLNG"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        
+        document.getElementById('login-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorElement = document.getElementById('login-error');
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then(userCredential => {
+                    window.location.href = 'dash.html';
+                })
+                .catch(error => {
+                    errorElement.textContent = "Invalid email or password.";
+                    errorElement.style.display = 'block';
+                });
+        });
+    </script>
+</body>
+</html>

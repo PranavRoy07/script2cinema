@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>User Profile - Script2Cinema</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+
+  <style>
+    :root {
+      --primary-color: #FF8C00;
+      --dark-blue: #0d1b2a;
+      --black-bg: #010409;
+      --card-bg: #0d1117;
+      --white-text: #f0f6fc;
+      --grey-text: #8b949e;
+      --border-color: #30363d;
+      --font-family: 'Poppins', sans-serif;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      background-image:url('bc 6.jpg');
+      background-size:cover;background-position:center;
+      background-repeat:no-repeat;background-attachment:fixed;
+      font-family:var(--font-family);background-color:var(--black-bg);color:var(--white-text);
+    }
+    header{background-color:var(--dark-blue);padding:1rem 2rem;border-bottom:1px solid var(--border-color);
+      display:flex;justify-content:space-between;align-items:center}
+    .logo{font-size:1.5rem;font-weight:700;color:var(--primary-color);text-decoration:none}
+    .nav-links{list-style:none;display:flex;gap:1.5rem}
+    .nav-links a{text-decoration:none;color:var(--white-text);font-weight:500;padding:0.5rem 0.75rem;border-radius:6px;display:flex;align-items:center;gap:0.5rem}
+    .nav-links a.active,.nav-links a:hover{background-color:var(--primary-color);color:var(--black-bg)}
+    .container{max-width:1280px;margin:2rem auto;padding:0 2rem}
+    .profile-grid{display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:start}
+    .left-column,.right-column{display:flex;flex-direction:column;gap:2rem}
+    .card{background-color:rgba(13,17,23,0.9);border:1px solid var(--border-color);border-radius:8px;padding:1.5rem;backdrop-filter:blur(10px)}
+    .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+    h2{font-size:1.3rem}
+    .avatar-container{position:relative;width:80px;height:80px}
+    .avatar{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--border-color)}
+    .avatar-overlay{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%;background-color:rgba(0,0,0,0.5);color:white;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .25s}
+    .avatar-container.editable:hover .avatar-overlay{opacity:1;cursor:pointer}
+    #avatar-initials{display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:600;color:var(--white-text)}
+    #avatar-upload-input{display:none}
+
+    /* role tag colors */
+    .tag{
+      padding:0.3rem 0.8rem;border-radius:15px;font-size:0.8rem;
+      font-weight:500;color:var(--black-bg);text-shadow:1px 1px 2px rgba(0,0,0,0.2);
+      background-color: var(--primary-color); 
+    }
+    .tag-writer{background:#3498db}.tag-director{background:#e74c3c}.tag-producer{background:#2ecc71}
+    .tag-executive-producer{background:#1abc9c}.tag-assistant-director{background:#f39c12}
+    .tag-casting-director{background:#e67e22}.tag-cinematographer{background:#9b59b6}.tag-editor{background:#34495e}
+    .tag-vfx-artist{background:#8e44ad}.tag-musician{background:#27ae60}.tag-choreographer{background:#d35400}
+    .tag-action-director{background:#c0392b}.tag-make-up-team{background:#f1c40f}.tag-costume-designer{background:#7f8c8d}
+    .tag-lyricist { background: #16a085; } 
+    .tag-default{background:var(--primary-color)} 
+
+    .btn{display:inline-flex;align-items:center;gap:0.5rem;background-color:var(--primary-color);color:var(--black-bg);padding:0.6rem 1.2rem;border-radius:6px;text-decoration:none;font-weight:600;border:none;cursor:pointer;transition:filter .2s}
+    .btn:hover{filter:brightness(1.08)}
+    .btn-secondary{background-color:var(--card-bg);color:var(--white-text);border:1px solid var(--border-color)}
+    .empty-state{text-align:center;padding:2rem 1rem;border:1px dashed var(--border-color);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .stats-list{list-style:none;margin-top:1rem}
+    .stats-list li{display:flex;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid var(--border-color)}
+    .stats-list li:last-child{border-bottom:none}
+    .project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;margin-top:1.5rem}
+    .project-card{background-color:var(--black-bg);border:1px solid var(--border-color);border-radius:6px;padding:1rem}
+    .project-card h4{color:var(--primary-color)}
+    #about-me-display{color:var(--grey-text);white-space:pre-wrap;line-height:1.6}
+    #about-me-edit-area{display:none}
+    #about-me-textarea{width:100%;min-height:120px;background-color:var(--black-bg);border:1px solid var(--border-color);border-radius:6px;color:var(--white-text);padding:0.5rem;font-family:inherit}
+    .btn-edit{background:none;border:none;color:var(--grey-text);cursor:pointer}
+    
+    
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .portfolio-card {
+      background-color: var(--black-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .portfolio-card-media {
+      background-color: #000;
+      position: relative;
+    }
+    .portfolio-card-media img,
+    .portfolio-card-media video {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+    .portfolio-card-media audio {
+      width: 100%;
+      display: block;
+      padding: 1rem;
+    }
+    .portfolio-card-media .text-preview {
+      height: 200px;
+      overflow-y: auto;
+      padding: 1rem;
+      background-color: var(--black-bg);
+      color: var(--grey-text);
+      font-family: monospace;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+    }
+    .portfolio-card-content {
+      padding: 1rem;
+    }
+    .portfolio-card-content h4 {
+      font-size: 1.1rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+    .portfolio-card-content p {
+      font-size: 0.9rem;
+      color: var(--grey-text);
+      line-height: 1.5;
+    }
+    .portfolio-card-icon {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 30px;
+      height: 30px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+    
+    /* ACTIONS */
+    .portfolio-actions {
+      display: flex;
+      justify-content: space-around;
+      padding: 0.8rem;
+      border-top: 1px solid var(--border-color);
+      background-color: #0b0e13;
+    }
+    .action-btn {
+      background: none;
+      border: none;
+      color: var(--grey-text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .action-btn:hover {
+      color: var(--white-text);
+    }
+    .action-btn.liked {
+      color: #e74c3c;
+    }
+    
+    /* Comments */
+    .comments-section {
+      display: none;
+      background-color: #010409;
+      border-top: 1px solid var(--border-color);
+      padding: 1rem;
+    }
+    .comment-input-area {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      align-items: center;
+      width: 100%;
+    }
+    .comment-input {
+      flex-grow: 1;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 0.5rem;
+      color: var(--white-text);
+      font-family: inherit;
+    }
+    .comment-input:focus {
+        outline: 1px solid var(--primary-color);
+    }
+    .comment-list {
+      max-height: 150px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    .comment-item {
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding-bottom: 0.5rem;
+    }
+    .comment-author {
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    
+  </style>
+</head>
+
+<body>
+  <header>
+    <a class="logo" href="dash.html">Script2Cinema</a>
+    <ul class="nav-links">
+      <li><a href="dash.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+      <li><a href="project.html"><i class="fas fa-folder"></i> Projects</a></li>
+      <li><a href="collab.html"><i class="fas fa-users"></i> Collaborators</a></li>
+      <li><a href="message.html"><i class="fas fa-envelope"></i> Message</a></li>
+      <li><a href="profile.html" class="active"><i class="fas fa-user-circle"></i> Profile</a></li>
+    </ul>
+    <div class="user-actions">
+      <span id="user-welcome">Welcome...</span>
+      <button id="logout-btn" class="btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="profile-grid">
+      <div class="left-column">
+        <div class="card">
+          <div class="profile-main-info" style="display:flex;align-items:center;gap:1.5rem">
+            <div class="avatar-container" id="avatar-container">
+              <img id="avatar-img" src="" alt="Profile Picture" class="avatar" style="display:none">
+              <div id="avatar-initials" class="avatar"></div>
+              <div class="avatar-overlay"><i class="fas fa-camera"></i></div>
+              <input id="avatar-upload-input" type="file" accept="image/*" style="display:none">
+            </div>
+
+            <div class="profile-details">
+              <h1 id="profile-name">Loading...</h1>
+              <p id="profile-email"><i class="fas fa-envelope"></i> Loading...</p>
+              <p id="profile-country" style="display:none"><i class="fas fa-map-marker-alt"></i> Loading...</p>
+              <p><i class="fas fa-calendar-alt"></i> Joined <span id="join-date">...</span></p>
+              <p id="profile-phone" style="display:none; margin-top: 5px;"><i class="fas fa-phone"></i> <span>...</span></p>
+            </div>
+          </div>
+
+          <div class="roles-section" style="margin-top:1.5rem;">
+            <h3>Roles & Expertise</h3>
+            <div id="roles-container" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:1rem"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>About Me</h2>
+            <div>
+              <button id="edit-about-btn" class="btn-edit" style="display:none"><i class="fas fa-pencil-alt"></i> Edit</button>
+            </div>
+          </div>
+
+          <div id="about-me-view">
+            <p id="about-me-display">This user hasn't added an introduction yet.</p>
+          </div>
+
+          <div id="about-me-edit-area">
+            <textarea id="about-me-textarea"></textarea>
+            <div style="margin-top:1rem;display:flex;gap:0.5rem">
+              <button id="save-about-btn" class="btn">Save</button>
+              <button id="cancel-about-btn" class="btn-secondary" style="border:1px solid var(--border-color)">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-briefcase"></i> Portfolio <span id="portfolio-header-count">(0)</span></h2>
+            <a id="add-portfolio-btn" href="add portfolio.html" class="btn btn-secondary" style="display:none"><i class="fas fa-plus"></i> Add Item</a>
+          </div>
+          <div id="portfolio-container">
+            <div id="portfolio-empty-state" class="empty-state">
+              <div class="icon"><i class="fas fa-upload"></i></div>
+              <p>No portfolio items added yet.</p>
+              <a id="add-portfolio-empty-btn" class="btn" href="add portfolio.html" style="margin-top:1rem;display:none">Add Your First Item</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 id="my-projects-header"><i class="fas fa-folder-open"></i> My Projects (0)</h2>
+            <a id="create-project-btn" href="create.html" class="btn btn-secondary" style="display:none"><i class="fas fa-plus"></i> Create</a>
+          </div>
+
+          <div id="projects-container">
+            <div id="projects-empty-state" class="empty-state">
+              <div class="icon"><i class="fas fa-folder-plus"></i></div>
+              <p>No projects yet</p>
+              <a id="create-project-empty-btn" href="create.html" class="btn" style="margin-top:1rem;display:none">Create a Project</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-column">
+        <div class="card">
+          <h2>Profile Stats</h2>
+          <ul class="stats-list">
+            <li><span>Projects Created</span> <strong id="projects-count">0</strong></li>
+            <li><span>Roles</span> <strong id="roles-count">0</strong></li>
+            <li><span>Member Since</span> <strong id="member-since-date">...</strong></li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>Professional Stats</h2>
+          <ul class="stats-list">
+            <li><span>Portfolio Items</span> <strong id="portfolio-stats-count">0</strong></li>
+            <li><span>Projects Collaborated</span> <strong>0</strong></li>
+            <li><span>Profile Views</span> <strong>0</strong></li>
+          </ul>
+        </div>
+        
+        <button id="profile-connect-btn" class="btn" style="width:100%; margin-top:1rem; display:none; justify-content:center;">
+            <i class="fas fa-user-plus"></i> Connect
+        </button>
+        
+      </div>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+  <script>
+    // 1. FIREBASE CONFIG
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJzGN3RURMAvSSk2OkxTj9I6JMsyrdVEc",
+      authDomain: "script2cinema-86afa.firebaseapp.com",
+      projectId: "script2cinema-86afa",
+      storageBucket: "script2cinema-86afa.appspot.com",
+      messagingSenderId: "709129400285",
+      appId: "1:709129400285:web:8e32274e9c605ffc7ed034",
+      measurementId: "G-DJS647QLNG"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // --- UTILS ---
+    function getInitials(name = ''){
+      const parts = name.trim().split(/\s+/);
+      const a = parts[0] ? parts[0][0] : '';
+      const b = parts.length > 1 ? parts[parts.length-1][0] : '';
+      return (a + b).toUpperCase();
+    }
+
+    function generateColor(name = '') {
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      const r = (hash >> 0) & 0xFF;
+      const g = (hash >> 8) & 0xFF;
+      const b = (hash >> 16) & 0xFF;
+      return '#' + [r,g,b].map(n => n.toString(16).padStart(2,'0')).join('');
+    }
+
+    // --- DISPLAY PROFILE ---
+    function displayProfileData(userData){
+      if(!userData) return;
+      document.getElementById('profile-name').textContent = userData.name || 'User';
+      document.getElementById('profile-email').innerHTML = `<i class="fas fa-envelope"></i> ${userData.email || ''}`;
+
+      // Avatar Logic
+      const avatarImg = document.getElementById('avatar-img');
+      const avatarInit = document.getElementById('avatar-initials');
+      if(userData.profilePictureUrl){
+        avatarImg.src = userData.profilePictureUrl;
+        avatarImg.style.display = 'block';
+        avatarInit.style.display = 'none';
+      } else {
+        avatarImg.style.display = 'none';
+        avatarInit.style.display = 'flex';
+        avatarInit.textContent = getInitials(userData.name || '');
+        avatarInit.style.backgroundColor = generateColor(userData.name || 'user');
+      }
+
+      // Location
+      const countryEl = document.getElementById('profile-country');
+      if(userData.country){ countryEl.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${userData.country}`; countryEl.style.display='block' }
+      else countryEl.style.display='none';
+
+      // Date
+      if(userData.joined){ const jd = userData.joined.toDate(); document.getElementById('join-date').textContent = jd.toLocaleDateString('en-US',{month:'long',year:'numeric'}); document.getElementById('member-since-date').textContent = jd.toLocaleDateString('en-US',{month:'short',year:'numeric'}); }
+
+      // Phone
+      const phoneEl = document.getElementById('profile-phone');
+      if (userData.phone) {
+          phoneEl.innerHTML = `<i class="fas fa-phone"></i> ${userData.phone}`;
+          phoneEl.style.display = 'block';
+      } else {
+          phoneEl.style.display = 'none';
+      }
+
+      // Roles
+      const rolesContainer = document.getElementById('roles-container');
+      rolesContainer.innerHTML = '';
+      if(Array.isArray(userData.roles) && userData.roles.length){
+        document.getElementById('roles-count').textContent = userData.roles.length;
+        userData.roles.forEach(r=>{
+          const span = document.createElement('span');
+          const cls = 'tag-' + r.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+          span.className = `tag ${cls}`;
+          span.textContent = r;
+          rolesContainer.appendChild(span);
+        });
+      } else {
+        document.getElementById('roles-count').textContent = 0;
+      }
+
+      document.getElementById('about-me-display').textContent = userData.aboutMe || "This user hasn't added an introduction yet.";
+    }
+    
+    // --- PORTFOLIO RENDERER ---
+    function renderPortfolioItem(doc, currentUserId) {
+        const p = doc.data();
+        const itemId = doc.id;
+        
+        let mediaHtml = '';
+        let iconHtml = '';
+
+        const likedBy = p.likedBy || [];
+        const isLiked = likedBy.includes(currentUserId);
+        const likeClass = isLiked ? 'liked' : '';
+        const likeIconClass = isLiked ? 'fas' : 'far'; 
+
+        switch(p.type) {
+            case 'image':
+                mediaHtml = `<img src="${p.fileUrl}" alt="${p.title}">`;
+                iconHtml = `<div class="portfolio-card-icon"><i class="fas fa-image"></i></div>`;
+                break;
+            case 'video':
+                mediaHtml = `<video controls><source src="${p.fileUrl}" type="video/mp4">Your browser does not support the video tag.</video>`;
+                iconHtml = `<div class="portfolio-card-icon"><i class="fas fa-video"></i></div>`;
+                break;
+            case 'audio':
+                mediaHtml = `<audio controls><source src="${p.fileUrl}" type="audio/mpeg">Your browser does not support the audio element.</audio>`;
+                iconHtml = `<div class="portfolio-card-icon"><i class="fas fa-music"></i></div>`;
+                break;
+            case 'text':
+                mediaHtml = `<div class="text-preview">${p.textContent || 'No text content.'}</div>`;
+                iconHtml = `<div class="portfolio-card-icon"><i class="fas fa-file-alt"></i></div>`;
+                break;
+            default:
+                mediaHtml = `<div class="text-preview"><a href="${p.fileUrl}" target="_blank" style="color:white;text-decoration:underline">View File</a></div>`;
+                iconHtml = `<div class="portfolio-card-icon"><i class="fas fa-file"></i></div>`;
+        }
+
+        return `
+            <div class="portfolio-card">
+                <div class="portfolio-card-media">
+                    ${mediaHtml}
+                    ${iconHtml}
+                </div>
+                <div class="portfolio-card-content">
+                    <h4>${p.title}</h4>
+                    <p>${p.description || ''}</p>
+                </div>
+                <div class="portfolio-actions">
+                    <button class="action-btn ${likeClass}" id="like-btn-${itemId}" onclick="handleLike('${itemId}')">
+                        <i class="${likeIconClass} fa-heart"></i> <span id="like-count-${itemId}">${likedBy.length}</span>
+                    </button>
+                    <button class="action-btn" onclick="toggleComments('${itemId}')">
+                        <i class="far fa-comment"></i>
+                    </button>
+                    <button class="action-btn" onclick="handleShare('${itemId}')">
+                        <i class="far fa-share-square"></i>
+                    </button>
+                </div>
+                <div id="comments-section-${itemId}" class="comments-section">
+                    <form class="comment-input-area" onsubmit="event.preventDefault(); postComment('${itemId}')">
+                        <input type="text" id="comment-input-${itemId}" class="comment-input" placeholder="Write a comment..." autocomplete="off">
+                        <button type="submit" class="btn btn-small"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                    <div id="comment-list-${itemId}" class="comment-list">
+                        <p style="color:grey; font-size:0.8rem">Loading comments...</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // --- MAIN ---
+    auth.onAuthStateChanged(async user => {
+      if(!user) { window.location.href = 'login.html'; return; }
+
+      // Get Current User Info (Need name for connection request)
+      let currentUserName = "User";
+      db.collection('users').doc(user.uid).get().then(doc => {
+          if(doc.exists) {
+              currentUserName = doc.data().name;
+              document.getElementById('user-welcome').textContent = `Welcome, ${currentUserName}`;
+          }
+      });
+
+      const params = new URLSearchParams(window.location.search);
+      const profileId = params.get('id');
+      const isOwnProfile = !profileId || profileId === user.uid;
+      const targetUid = isOwnProfile ? user.uid : profileId;
+
+      // 1. Load User Data
+      const userRef = db.collection('users').doc(targetUid);
+      userRef.onSnapshot(doc => {
+        if(!doc.exists){
+          document.body.innerHTML = '<h1 style="color:white;padding:2rem;">User not found.</h1>';
+          return;
+        }
+        displayProfileData(doc.data());
+      });
+
+      // 2. Show Edit Controls (If Owner)
+      if(isOwnProfile){
+        document.getElementById('edit-about-btn').style.display = 'inline-block';
+        document.getElementById('add-portfolio-btn').style.display = 'inline-flex';
+        document.getElementById('create-project-btn').style.display = 'inline-flex';
+        document.getElementById('create-project-empty-btn').style.display = 'inline-flex';
+      } else {
+        // --- 7. NEW CONNECT BUTTON LOGIC (If NOT Owner) ---
+        const connId = [user.uid, targetUid].sort().join("_");
+        
+        db.collection('connections').doc(connId).onSnapshot(snap => {
+            const btn = document.getElementById('profile-connect-btn');
+            btn.style.display = 'flex'; // Show it
+            
+            if(snap.exists) {
+                const data = snap.data();
+                if(data.status === 'pending') {
+                    btn.innerHTML = '<i class="fas fa-clock"></i> Request Sent';
+                    btn.style.backgroundColor = '#6c757d';
+                    btn.disabled = true;
+                } else if(data.status === 'accepted') {
+                    btn.innerHTML = '<i class="fas fa-comments"></i> Message';
+                    btn.style.backgroundColor = '#28a745';
+                    btn.disabled = false;
+                    btn.onclick = () => window.location.href = `message.html?chatWith=${targetUid}`;
+                } else {
+                    // Default / Declined state
+                    btn.innerHTML = '<i class="fas fa-user-plus"></i> Connect';
+                    btn.style.backgroundColor = ''; 
+                    btn.disabled = false;
+                    btn.onclick = () => initiateConnection(user.uid, currentUserName, targetUid);
+                }
+            } else {
+                // No connection yet
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> Connect';
+                btn.style.backgroundColor = '';
+                btn.disabled = false;
+                btn.onclick = () => initiateConnection(user.uid, currentUserName, targetUid);
+            }
+        });
+      }
+
+      // 3. Avatar Upload Widget (RESTRICTED TO IMAGES ONLY)
+      const cloudName = "di8j321kc";
+      const uploadPreset = "project_files_v2"; 
+      const myWidget = cloudinary.createUploadWidget({
+        cloudName, 
+        uploadPreset, 
+        cropping: true, 
+        multiple: false,
+        resourceType: "image", 
+        clientAllowedFormats: ["png", "jpg", "jpeg", "webp"], 
+        maxFileSize: 5000000 
+      }, (error, result) => {
+        if(!error && result && result.event === "success"){
+          const secureUrl = result.info.secure_url;
+          db.collection('users').doc(user.uid).update({ profilePictureUrl: secureUrl }).catch(e=>console.error('Profile update error', e));
+        } else if (error) {
+          console.error('Cloudinary error', error);
+        }
+      });
+
+      const avatarContainer = document.getElementById('avatar-container');
+      if(isOwnProfile){
+        avatarContainer.classList.add('editable');
+        avatarContainer.addEventListener('click', () => myWidget.open());
+      }
+
+      // 4. About Me Edit Logic
+      const editBtn = document.getElementById('edit-about-btn');
+      const editArea = document.getElementById('about-me-edit-area');
+      const viewArea = document.getElementById('about-me-view');
+      const textarea = document.getElementById('about-me-textarea');
+      const saveBtn = document.getElementById('save-about-btn');
+      const cancelBtn = document.getElementById('cancel-about-btn');
+
+      if(isOwnProfile){
+        editBtn.style.display = 'inline-block';
+        editBtn.addEventListener('click', async () => {
+          const doc = await db.collection('users').doc(user.uid).get();
+          const cur = doc.exists ? (doc.data().aboutMe || '') : '';
+          textarea.value = cur;
+          viewArea.style.display = 'none';
+          editArea.style.display = 'block';
+          textarea.focus();
+        });
+
+        cancelBtn.addEventListener('click', () => {
+          editArea.style.display = 'none';
+          viewArea.style.display = 'block';
+        });
+
+        saveBtn.addEventListener('click', async () => {
+          const val = textarea.value.trim();
+          try{
+            await db.collection('users').doc(user.uid).update({ aboutMe: val });
+            editArea.style.display = 'none';
+            viewArea.style.display = 'block';
+          } catch(err){
+            console.error('Failed to save aboutMe', err);
+            alert('Could not save — try again.');
+          }
+        });
+      }
+
+      // 5. Load Projects
+      const projectsContainer = document.getElementById('projects-container');
+      const myProjectsHeader = document.getElementById('my-projects-header');
+      const projectsEmptyState = document.getElementById('projects-empty-state');
+
+      const projSnap = await db.collection('projects').where('creatorId','==', targetUid).get();
+      const projCount = projSnap.size;
+      myProjectsHeader.innerHTML = `<i class="fas fa-folder-open"></i> My Projects (${projCount})`;
+      document.getElementById('projects-count').textContent = projCount;
+
+      if(!projSnap.empty){
+        projectsEmptyState.style.display = 'none';
+        let html = '<div class="project-grid">';
+        projSnap.forEach(doc=>{
+          const p = doc.data();
+          html += `<div class="project-card"><h4>${p.title || 'Untitled'}</h4><p>${p.status || ''}</p></div>`;
+        });
+        html += '</div>';
+        projectsContainer.innerHTML = html;
+      } else {
+        projectsEmptyState.style.display = 'flex';
+      }
+
+      // 6. Load Portfolio
+      const portfolioContainer = document.getElementById('portfolio-container');
+      const portfolioHeaderCount = document.getElementById('portfolio-header-count');
+      const portfolioStatsCount = document.getElementById('portfolio-stats-count');
+
+      db.collection('portfolioItems').where('userId', '==', targetUid).orderBy('createdAt', 'desc')
+        .onSnapshot(snap => {
+            const count = snap.size;
+            portfolioHeaderCount.textContent = `(${count})`;
+            portfolioStatsCount.textContent = count;
+            
+            if (snap.empty) {
+                portfolioContainer.innerHTML = `
+                    <div id="portfolio-empty-state" class="empty-state">
+                        <div class="icon"><i class="fas fa-upload"></i></div>
+                        <p>No portfolio items added yet.</p>
+                        <a id="add-portfolio-empty-btn" class="btn" href="add portfolio.html" 
+                           style="margin-top:1rem; display:${isOwnProfile ? 'inline-flex' : 'none'}">
+                           Add Your First Item
+                        </a>
+                    </div>`;
+            } else {
+                let html = '<div class="portfolio-grid">';
+                snap.forEach(doc => {
+                    html += renderPortfolioItem(doc, user.uid);
+                });
+                html += '</div>';
+                portfolioContainer.innerHTML = html;
+            }
+        });
+
+      document.getElementById('logout-btn').addEventListener('click', () => auth.signOut().then(()=>window.location.href='login.html'));
+      
+      // --- SOCIAL ACTIONS ---
+      window.handleLike = async (itemId) => {
+          const user = auth.currentUser;
+          if(!user) return;
+          const itemRef = db.collection('portfolioItems').doc(itemId);
+          const doc = await itemRef.get();
+          if(!doc.exists) return;
+          
+          const data = doc.data();
+          const likedBy = data.likedBy || [];
+          
+          if(likedBy.includes(user.uid)) {
+              await itemRef.update({ likedBy: firebase.firestore.FieldValue.arrayRemove(user.uid) });
+          } else {
+              await itemRef.update({ likedBy: firebase.firestore.FieldValue.arrayUnion(user.uid) });
+          }
+      };
+      
+      window.toggleComments = (itemId) => {
+          const section = document.getElementById(`comments-section-${itemId}`);
+          if(section.style.display === 'block') {
+              section.style.display = 'none';
+          } else {
+              section.style.display = 'block';
+              loadComments(itemId); 
+          }
+      };
+      
+      window.postComment = async (itemId) => {
+          const user = auth.currentUser;
+          if(!user) { alert("Login to comment."); return; }
+          const input = document.getElementById(`comment-input-${itemId}`);
+          const text = input.value.trim();
+          if(!text) return;
+          
+          try {
+              // We already fetched currentUserName in auth state change
+              await db.collection('portfolioItems').doc(itemId).collection('comments').add({
+                  userId: user.uid, userName: currentUserName, text: text,
+                  createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              });
+              input.value = ''; 
+          } catch(error) { console.error(error); alert("Failed to post."); }
+      };
+      
+      window.loadComments = (itemId) => {
+          const listDiv = document.getElementById(`comment-list-${itemId}`);
+          db.collection('portfolioItems').doc(itemId).collection('comments')
+            .orderBy('createdAt', 'asc')
+            .onSnapshot(snap => {
+                listDiv.innerHTML = ''; 
+                if(snap.empty) {
+                    listDiv.innerHTML = '<p style="color:grey; font-size:0.8rem">No comments yet.</p>';
+                } else {
+                    snap.forEach(doc => {
+                        const c = doc.data();
+                        const div = document.createElement('div');
+                        div.className = 'comment-item';
+                        div.innerHTML = `<span class="comment-author">${c.userName || 'User'}:</span> ${c.text}`;
+                        listDiv.appendChild(div);
+                    });
+                    listDiv.scrollTop = listDiv.scrollHeight;
+                }
+            });
+      };
+      
+      window.handleShare = (itemId) => {
+          const url = window.location.href; 
+          navigator.clipboard.writeText(url).then(() => alert("Profile URL copied!"));
+      };
+      
+      // --- NEW FUNCTION: Initiate Connection ---
+      window.initiateConnection = async (myUid, myName, theirUid) => {
+          const btn = document.getElementById('profile-connect-btn');
+          btn.disabled = true;
+          btn.innerText = "Sending...";
+          
+          try {
+              const targetName = document.getElementById('profile-name').innerText;
+              const connId = [myUid, theirUid].sort().join("_");
+              
+              await db.collection('connections').doc(connId).set({
+                  participants: [myUid, theirUid],
+                  requesterId: myUid,
+                  requesterName: myName,
+                  receiverId: theirUid,
+                  receiverName: targetName,
+                  status: 'pending',
+                  timestamp: firebase.firestore.FieldValue.serverTimestamp()
+              }, { merge: true });
+              
+              alert("Request sent successfully!");
+          } catch(e) {
+              console.error(e);
+              alert("Error sending request.");
+              btn.disabled = false;
+              btn.innerText = "Connect";
+          }
+      };
+
+    });
+  </script>
+</body>
+</html>

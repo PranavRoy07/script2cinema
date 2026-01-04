@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Portfolio Item - Script2Cinema</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+  
+  <style>
+    body { 
+      font-family: 'Poppins', sans-serif; 
+      background-color: #010409; 
+      color: #f0f6fc; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh; 
+      margin: 0; 
+
+      /* BACKGROUND IMAGE SETTINGS */
+      background-image: url('addport.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    .portfolio-uploader { 
+      background-color: rgba(13, 17, 23, 0.95); /* Slightly transparent to blend with bg */
+      border: 1px solid #30363d; 
+      border-radius: 10px; 
+      padding: 2rem; 
+      width: 100%; 
+      max-width: 600px; 
+      box-shadow: 0 8px 30px rgba(0,0,0,0.7); 
+      backdrop-filter: blur(5px); /* Adds a nice blur effect behind the form */
+    }
+
+    .uploader-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    h2 { font-size: 1.5rem; font-weight: 600; margin: 0; }
+    .close-btn { background: none; border: none; color: #8b949e; font-size: 1.5rem; cursor: pointer; text-decoration: none; }
+    .form-group { margin-bottom: 1.5rem; }
+    label { display: block; font-weight: 500; margin-bottom: 0.5rem; color: #8b949e; }
+    .content-type-selector { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .type-btn { background-color: #21262d; border: 1px solid #30363d; color: #f0f6fc; padding: 1rem; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s; }
+    .type-btn.active { background-color: #FF8C00; color: #010409; border-color: #FF8C00; font-weight: 600; }
+    .type-btn i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; }
+    input[type="text"], textarea { width: 100%; background-color: #010409; border: 1px solid #30363d; border-radius: 6px; padding: 0.75rem; color: #f0f6fc; font-family: inherit; font-size: 1rem; box-sizing: border-box; }
+    textarea { min-height: 150px; resize: vertical; }
+    .uploader-footer { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; }
+    .btn { padding: 0.75rem 1.5rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; font-size: 1rem; text-decoration: none; }
+    .btn-primary { background-color: #FF8C00; color: #010409; }
+    .btn-secondary { background-color: #21262d; color: #f0f6fc; }
+    .hidden { display: none; }
+    #upload_widget_button { width: 100%; background-color: #21262d; border: 1px dashed #30363d; color: #f0f6fc; padding: 1rem; border-radius: 8px; cursor: pointer; }
+    #file-name-display { color: #2ea043; margin-top: 0.5rem; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="portfolio-uploader">
+    <div class="uploader-header">
+      <h2><i class="fas fa-plus"></i> Add Portfolio Item</h2>
+      <a href="profile.html" class="close-btn">&times;</a>
+    </div>
+
+    <form id="portfolio-form">
+      <div class="form-group">
+        <label>Content Type</label>
+        <div class="content-type-selector">
+          <button type="button" class="type-btn active" data-type="text"><i class="fas fa-file-alt"></i> Text</button>
+          <button type="button" class="type-btn" data-type="image"><i class="fas fa-image"></i> Image</button>
+          <button type="button" class="type-btn" data-type="video"><i class="fas fa-video"></i> Video</button>
+          <button type="button" class="type-btn" data-type="audio"><i class="fas fa-music"></i> Audio</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="portfolio-title">Title</label>
+        <input type="text" id="portfolio-title" required placeholder="e.g., My Short Film Script">
+      </div>
+
+      <div class="form-group">
+        <label for="portfolio-desc">Description (Optional)</label>
+        <input type="text" id="portfolio-desc" placeholder="Short description...">
+      </div>
+
+      <div class="form-group">
+        <label>Content</label>
+        
+        <div id="text-input-area">
+          <textarea id="text-content" placeholder="Paste your script or text content here..."></textarea>
+        </div>
+
+        <div id="file-upload-area" class="hidden">
+          <button type="button" id="upload_widget_button">Upload File</button>
+          <p id="file-name-display"></p>
+        </div>
+        
+        <input type="hidden" id="file-url-input">
+      </div>
+
+      <div class="uploader-footer">
+        <a href="profile.html" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary" id="submit-btn">Add to Portfolio</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+  <script>
+    // 1. FIREBASE CONFIG
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJzGN3RURMAvSSk2OkxTj9I6JMsyrdVEc",
+      authDomain: "script2cinema-86afa.firebaseapp.com",
+      projectId: "script2cinema-86afa",
+      storageBucket: "script2cinema-86afa.appspot.com",
+      messagingSenderId: "709129400285",
+      appId: "1:709129400285:web:8e32274e9c605ffc7ed034"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // 2. UI LOGIC (Toggle between Text and File modes)
+    const typeButtons = document.querySelectorAll('.type-btn');
+    const textInputArea = document.getElementById('text-input-area');
+    const fileUploadArea = document.getElementById('file-upload-area');
+    const textContent = document.getElementById('text-content');
+    const fileUrlInput = document.getElementById('file-url-input');
+    let activeType = 'text';
+
+    typeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Toggle Active Button
+        typeButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeType = btn.dataset.type;
+
+        // Toggle UI Sections
+        if (activeType === 'text') {
+          textInputArea.classList.remove('hidden');
+          fileUploadArea.classList.add('hidden');
+        } else {
+          textInputArea.classList.add('hidden');
+          fileUploadArea.classList.remove('hidden');
+          // Update button text to match type (e.g. "Upload VIDEO")
+          document.getElementById('upload_widget_button').innerText = `Upload ${activeType.toUpperCase()}`;
+        }
+      });
+    });
+
+    // 3. CLOUDINARY WIDGET (Final Corrected Version)
+    const myWidget = cloudinary.createUploadWidget({
+      cloudName: "di8j321kc",
+      
+      // IMPORTANT: Matches the NEW Unsigned Preset you created
+      uploadPreset: "project_files_v2", 
+      
+      // Forces Cloudinary to accept Audio/Video/PDF
+      resourceType: "auto", 
+      
+      // Explicitly allowed formats (MP3 is included here!)
+      clientAllowedFormats: [
+          "png", "jpg", "jpeg", "gif", "webp", 
+          "mp4", "mov", "avi", "webm", 
+          "mp3", "wav", "ogg", 
+          "pdf", "doc", "docx", "txt"
+      ],
+      
+      sources: ['local', 'url', 'camera'],
+      maxFileSize: 50000000 // 50MB
+    }, (error, result) => {
+      if (!error && result && result.event === "success") {
+        console.log("Upload Success:", result.info);
+        
+        // Save the URL to the hidden input
+        fileUrlInput.value = result.info.secure_url;
+        
+        // Show visual confirmation
+        document.getElementById('file-name-display').innerHTML = 
+            `✅ File Uploaded: ${result.info.original_filename}`;
+      } else if (error) {
+        console.error("Cloudinary Error:", error);
+        alert("Upload Failed: " + (error.message || error.statusText || "Unknown error"));
+      }
+    });
+
+    document.getElementById("upload_widget_button").addEventListener("click", () => myWidget.open());
+
+    // 4. SUBMIT FORM LOGIC
+    document.getElementById('portfolio-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Please login first.");
+        return;
+      }
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.innerText = "Saving...";
+
+      try {
+        const title = document.getElementById('portfolio-title').value.trim();
+        const description = document.getElementById('portfolio-desc').value.trim();
+        
+        const item = {
+          userId: user.uid,
+          type: activeType,
+          title: title,
+          description: description,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        // Check content based on type
+        if (activeType === 'text') {
+          item.textContent = textContent.value.trim();
+          if(!item.textContent) throw new Error("Please enter text content.");
+        } else {
+          item.fileUrl = fileUrlInput.value;
+          if(!item.fileUrl) throw new Error("Please upload a file first.");
+        }
+
+        // Save to Firebase
+        await db.collection('portfolioItems').add(item);
+        
+        alert("✅ Added to Portfolio Successfully!");
+        window.location.href = 'profile.html';
+
+      } catch (error) {
+        console.error("Save Error:", error);
+        alert("Error Saving: " + error.message);
+        btn.disabled = false;
+        btn.innerText = "Add to Portfolio";
+      }
+    });
+
+    // Initial Auth Check
+    auth.onAuthStateChanged(user => {
+      if (!user) window.location.href = 'login.html';
+    });
+  </script>
+</body>
+</html>

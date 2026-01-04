@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script2Cinema - Where Stories Find Their Crew</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Global Styles & Variables --- */
+        :root {
+            --primary-color: #FF8C00;
+            --dark-bg: #0a0a0a;
+            --medium-bg: #1a1a1a;
+            --light-text: #f0f0f0;
+            --dark-text: #a0a0a0;
+            --font-family: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        
+        .text-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        h1, h2, h3 {
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+
+        /* --- Header & Navigation --- */
+        header {
+            background-color: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            height: 100px;
+            width: auto;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--light-text);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-color);
+        }
+        
+        .nav-buttons .btn {
+            margin-left: 1rem;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .btn-outline {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+
+        /* --- Hero Section --- */
+        .hero {
+            height: 100vh;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('index bc.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+        }
+
+        .hero-content {
+            max-width: 700px;
+        }
+        
+        .hero-content .subtitle {
+            font-weight: 600;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            color: #fff;
+            margin: 0.5rem 0 1.5rem;
+        }
+
+        .hero-content p {
+            font-size: 1.1rem;
+            color: var(--light-text);
+            margin-bottom: 2rem;
+        }
+        
+        .hero-content .btn {
+            font-size: 1.1rem;
+            padding: 0.8rem 2rem;
+        }
+        
+        /* --- Text Sections --- */
+        .text-container p {
+            color: var(--dark-text);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        /* --- Roles Section --- */
+        #roles {
+            background-color: var(--dark-bg);
+        }
+
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .role-card {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 400px;
+            transition: transform 0.3s ease;
+        }
+        
+        .role-card:hover {
+            transform: scale(1.03);
+        }
+
+        .role-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .role-card-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            color: white;
+            z-index: 2;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 20%, rgba(0,0,0,0) 100%);
+            transform: translateY(calc(100% - 95px));
+            transition: transform 0.4s ease-in-out;
+        }
+        
+        .role-card:hover .role-card-info {
+            transform: translateY(0);
+        }
+        
+        .role-card-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .role-card-info p {
+            font-size: 0.95rem;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out 0.2s;
+            line-height: 1.5;
+        }
+        
+        .role-card:hover .role-card-info p {
+            opacity: 1;
+        }
+
+        .role-card-info .btn {
+            margin-top: 1rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease-in-out 0.2s, transform 0.3s ease-in-out 0.2s;
+        }
+        
+        .role-card:hover .role-card-info .btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* --- FAQ Section --- */
+        #faq {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Parallax effect */
+        }
+        #faq::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('sc4.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Parallax effect */
+            z-index: 0;
+        }
+
+        #faq .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .faq-accordion {
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+        .faq-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--light-text);
+            padding: 1.5rem 1rem;
+            text-align: left;
+            font-size: 1.2rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+        .faq-question:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), padding 0.5s ease;
+        }
+        .faq-answer p {
+            padding: 0 1.5rem 1.5rem;
+            color: var(--dark-text);
+            line-height: 1.7;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            transition: max-height 1s cubic-bezier(1, 0, 1, 0);
+        }
+        .faq-icon {
+            font-size: 1.8rem;
+            font-weight: 300;
+            transition: transform 0.4s ease;
+        }
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+
+        /* --- Features Section --- */
+        #features {
+            position: relative; /* Needed for pseudo-element positioning */
+            background-color: var(--dark-bg); /* Fallback */
+            padding-top: 6rem; /* Adjust padding if needed */
+            padding-bottom: 6rem; /* Adjust padding if needed */
+        }
+        /* New background for features section */
+        #features::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('sc6.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Parallax effect */
+            z-index: 0; /* Behind content */
+        }
+        #features .container {
+            position: relative; /* Bring content above the pseudo-element */
+            z-index: 1;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .features-image-container {
+            border: 10px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 1rem;
+            background-color: #000;
+        }
+        
+        .features-image-container img {
+            width: 100%;
+            display: block;
+            border-radius: 4px;
+        }
+        
+        .features-content .features-subtitle {
+            color: var(--primary-color);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .features-content h2 {
+            text-align: left;
+            margin: 0.5rem 0 1rem;
+        }
+
+        .features-content > p {
+            color: var(--dark-text);
+            margin-bottom: 2rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            text-align: left;
+        }
+        
+        .feature-item .icon {
+            flex-shrink: 0;
+        }
+
+        .feature-item h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .feature-item p {
+            color: var(--dark-text);
+            font-size: 0.95rem;
+        }
+
+        /* --- Testimonials Section --- */
+        #testimonials {
+            position: relative;
+        }
+        #testimonials::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('sc4.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Parallax effect */
+            z-index: 0;
+        }
+        #testimonials .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        #testimonials h2 {
+            color: var(--primary-color);
+            margin-bottom: 3rem;
+        }
+        .testimonial-slider {
+            max-width: 800px;
+            margin: auto;
+            position: relative;
+            overflow: hidden;
+        }
+        .testimonial-slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .testimonial-slide {
+            min-width: 100%;
+            box-sizing: border-box;
+            padding: 0 4rem;
+            text-align: center;
+        }
+        .testimonial-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1.5rem;
+            border: 3px solid var(--primary-color);
+        }
+        .testimonial-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--light-text);
+            margin-bottom: 1rem;
+        }
+        .testimonial-text {
+            color: var(--dark-text);
+            font-size: 1.1rem;
+            font-style: italic;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            z-index: 10;
+        }
+        .slider-btn:hover {
+            color: var(--primary-color);
+        }
+        .prev-btn {
+            left: 0;
+        }
+        .next-btn {
+            right: 0;
+        }
+
+        /* --- Contact Info Section --- */
+        #contact-info {
+            background-color: #000;
+            padding: 4rem 2rem;
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .contact-col h3 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+        }
+        .contact-col p, .contact-col a {
+            color: var(--dark-text);
+            line-height: 1.8;
+            text-decoration: none;
+        }
+        .contact-col a:hover {
+            color: var(--primary-color);
+        }
+        .contact-col .footer-logo {
+            max-height: 80px;
+            margin-bottom: 1rem;
+        }
+        
+        /* --- Footer --- */
+        footer {
+            background-color: #000;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* --- Responsive Design --- */
+        @media (max-width: 900px) {
+            .nav-links {
+                display: none;
+            }
+            .hero-content h1 {
+                font-size: 3rem;
+            }
+            .testimonial-slide {
+                padding: 0 1rem;
+            }
+            .slider-btn {
+                font-size: 2.5rem;
+            }
+            .prev-btn { left: -10px; }
+            .next-btn { right: -10px; }
+            
+            #faq, #faq::before, #testimonials, #testimonials::before, #features::before {
+                background-attachment: scroll; 
+            }
+        }
+        
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="index.html"><img src="logos.png" alt="Script2Cinema Logo" class="logo"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="#features" class="active">Features</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#testimonials">Creators Say</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <a href="login.html" class="btn btn-outline">Log In</a>
+                <a href="signup.html" class="btn btn-primary">Sign Up</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero" id="hero">
+            <div class="hero-content">
+                <p class="subtitle">Dream. Crew. Screen.</p>
+                <h1>Where stories find their crew.</h1>
+                <p>Script2Cinema provides a vibrant platform for emerging talent to unleash their creativity and innovation in filmmaking.</p>
+                <a href="signup.html" class="btn btn-primary">Join The Crew</a>
+            </div>
+        </section>
+        
+        <section id="roles" class="container">
+            <h2 style="text-align: center;">Find Your Crew</h2>
+            <div class="roles-grid">
+                 <div class="role-card">
+                    <img src="director.jpg" alt="Film Director">
+                    <div class="role-card-info">
+                        <h3>Director</h3>
+                        <p>Use dashboards to share their vision and recruit the right crew. They keep projects organized and aligned from pre-production to final cut.</p>
+                        <a href="signup.html" class="btn btn-primary">Submit Details</a>
+                    </div>
+                </div>
+                <div class="role-card">
+                    <img src="producer.jpg" alt="Film Producer">
+                    <div class="role-card-info">
+                        <h3>Producer</h3>
+                        <p>Manage teams, tasks, and milestones all in one place. Script2Cinema replaces scattered tools with a streamlined workflow hub.</p>
+                        <a href="signup.html" class="btn btn-primary">Submit Details</a>
+                    </div>
+                </div>
+                <div class="role-card">
+                    <img src="writer.jpg" alt="Film Writer">
+                    <div class="role-card-info">
+                        <h3>Writer</h3>
+                        <p>Writers upload scripts, pitch ideas, and find directors or producers. They gain visibility and connect with collaborators who can bring their stories to life.</p>
+                        <a href="signup.html" class="btn btn-primary">Submit Details</a>
+                    </div>
+                </div>
+                <div class="role-card">
+                    <img src="cinematographer.jpg" alt="Cinematographer">
+                    <div class="role-card-info">
+                        <h3>Cinematographer</h3>
+                        <p>Get discovered through role filters in the hub. They share visual references and stay updated on project progress.</p>
+                        <a href="signup.html" class="btn btn-primary">Submit Details</a>
+                    </div>
+                </div>
+                <div class="role-card">
+                    <img src="music.jpg" alt="Musician or Composer">
+                    <div class="role-card-info">
+                        <h3>Musician</h3>
+                        <p>Share original scores directly with project teams. They align with editors and directors while showcasing their portfolio.</p>
+                        <a href="signup.html" class="btn btn-primary">Submit Details</a>
+                    </div>
+                </div>
+                <div class="role-card">
+                    <img src="vfx artist.jpg" alt="VFX Artist">
+                    <div class="role-card-info">
+                        <h3>VFX Artist</h3>
+                        <p>Upload effects files securely and track versions easily. They collaborate with directors and editors during post-production.</p>
+                        <a href="signup.html" class="btn btn-primary">Submit Details</a>
+                    </div>
+                </div>
+                <div class="role-card">
+                    <img src="editor.jpg" alt="Film Editor">
+                    <div class="role-card-info">
+                        <h3>Editor</h3>
+                        <p>Access raw footage in centralized workspaces. They collaborate on versions and receive real-time feedback seamlessly.</p>
+                        <a href="signup.html" class="btn btn-primary">Submit Details</a>
+                    </div>
+                </div>
+                <div class="role-card">
+                    <img src="Choreographer.png" alt="Choreographer directing dancers on a film set">
+                    <div class="role-card-info">
+                        <h3>Choreographer</h3>
+                        <p>Plan and share dance sequences with the director and cast. They use the platform to coordinate rehearsals and ensure movements align with the film's vision.</p>
+                        <a href="signup.html" class="btn btn-primary">Submit Details</a>
+                    </div>
+                </div>
+                <div class="role-card">
+                    <img src="others.png" alt="Various film crew roles represented in a single image">
+                    <div class="role-card-info">
+                        <h3>And Many More...</h3>
+                        <p>Every role is crucial to filmmaking. Whether you're a grip, gaffer, or sound designer, there's a project waiting for your skills. Select your craft and make your dream come true.</p>
+                        <a href="signup.html" class="btn btn-primary">Join The Crew</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features">
+            <div class="container">
+                <div class="features-grid">
+                    <div class="features-image-container">
+                        <img src="crew.jpg" alt="Filmmaking equipment including a camera, lights, and a director's chair">
+                    </div>
+                    <div class="features-content">
+                        <p class="features-subtitle">WHAT YOU WILL HAVE</p>
+                        <h2>Creative Freedom</h2>
+                        <p>We believe in giving filmmakers the freedom to explore their creativity without constraints, allowing their distinct voices and visions to shine through on screen.</p>
+                        <div class="feature-item">
+                            <div class="icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-color);"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                            </div>
+                            <div>
+                                <h3>Unrestricted Expression</h3>
+                                <p>We support each creator's unique storytelling approach, encouraging authenticity and originality.</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-color);"><path d="M15.5 22a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5Z"/><path d="M9.5 22a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5Z"/><path d="M2 13a6 6 0 0 1 6-6h8a6 6 0 0 1 6 6v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1Z"/><path d="M9 7V5a3 3 0 0 0-3-3H4a3 3 0 0 0-3 3v2"/></svg>
+                            </div>
+                            <div>
+                                <h3>Limitless Innovation</h3>
+                                <p>With no creative boundaries, filmmakers can experiment, innovate, and push the boundaries of cinematic art.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="faq">
+            <div class="container">
+                <h2>Your Questions Answered</h2>
+                <div class="faq-accordion">
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>What is Script2Cinema?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Script2Cinema is a collaboration hub built for filmmakers of every role. It's a single, dedicated online space where writers, directors, producers, and all other crew members can connect, manage projects, and bring their stories to life.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>How does Script2Cinema help filmmakers go from zero to the big screen?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Script2Cinema is designed to guide you through every stage of filmmaking. It starts by connecting you (the 'zero') with a full crew—from writers with scripts to directors, cinematographers, and editors. Once your team is assembled, the platform provides project management tools to keep production organized and on track. It simplifies collaboration with centralized file sharing and communication, eliminating confusion. By helping you successfully complete projects, you build a portfolio and a network, paving the way for bigger opportunities and your journey to the big screen.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Who can use Script2Cinema?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>The platform is designed for everyone in the film industry, from aspiring students and independent creators to seasoned professionals. Whether you are a writer, director, producer, cinematographer, editor, musician, VFX artist, or any other crew member, Script2Cinema has the tools to support your role.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Is Script2Cinema free to use?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Yes, Script2Cinema offers a free basic membership that allows you to create a profile, browse projects, and connect with other filmmakers. We may also offer premium subscription plans in the future with advanced features for larger-scale productions.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>How is my intellectual property protected?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>We take intellectual property very seriously. Your uploaded scripts, footage, and other project files are securely stored and are only accessible to the team members you approve for each project. Our terms of service include strict confidentiality clauses to protect your creative work.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonials">
+            <div class="container">
+                <h2>What Our Creators Say</h2>
+                <div class="testimonial-slider">
+                    <div class="testimonial-slides">
+                        <div class="testimonial-slide">
+                            <img src="https://i.pravatar.cc/100?img=49" alt="Avatar of Riya Sharma" class="testimonial-avatar">
+                            <h3 class="testimonial-name">Riya Sharma, Director</h3>
+                            <p class="testimonial-text">"As a new director, finding a dedicated crew was my biggest hurdle. On Script2Cinema, I connected with a talented cinematographer and editor within days. We managed our entire short film on the platform, turning a simple vision into a festival-ready reality."</p>
+                        </div>
+                        <div class="testimonial-slide">
+                            <img src="https://i.pravatar.cc/100?img=50" alt="Avatar of Arjun Mehra" class="testimonial-avatar">
+                            <h3 class="testimonial-name">Arjun Mehra, Writer</h3>
+                            <p class="testimonial-text">"I had a script I was passionate about but no industry connections. I uploaded it to Script2Cinema, and a producer who shared my vision reached out. Seeing my words come to life with a full, professional team was an incredible experience."</p>
+                        </div>
+                        <div class="testimonial-slide">
+                            <img src="https://i.pravatar.cc/100?img=51" alt="Avatar of Sameera Khan" class="testimonial-avatar">
+                            <h3 class="testimonial-name">David laher, VFX Artist</h3>
+                            <p class="testimonial-text">"The collaboration tools are a game-changer. Sharing large effect files and getting time-stamped feedback directly from the director in one place saved us countless hours. It's the most streamlined post-production workflow I've ever been a part of."</p>
+                        </div>
+                        <div class="testimonial-slide">
+                            <img src="https://i.pravatar.cc/100?img=52" alt="Avatar of Vikram Singh" class="testimonial-avatar">
+                            <h3 class="testimonial-name">Vikram Singh, Editor</h3>
+                            <p class="testimonial-text">"Finding freelance editing gigs used to be a challenge. With Script2Cinema, I joined a feature project that needed an editor urgently. The centralized workspace for raw footage and the real-time feedback tools from the director made the entire post-production process incredibly efficient."</p>
+                        </div>
+                        <div class="testimonial-slide">
+                            <img src="https://i.pravatar.cc/100?img=53" alt="Avatar of Anjali Desai" class="testimonial-avatar">
+                            <h3 class="testimonial-name">Henry Karle, Costume & Makeup</h3>
+                            <p class="testimonial-text">"This platform is a lifesaver for visual departments. I was able to share my costume designs and makeup mood boards directly with the director and DoP. Getting instant approvals and collaborating on the visual style for each character in one place was fantastic."</p>
+                        </div>
+                    </div>
+                    <button class="slider-btn prev-btn">&laquo;</button>
+                    <button class="slider-btn next-btn">&raquo;</button>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+    
+    <section id="contact-info">
+        <div class="contact-grid">
+            <div class="contact-col">
+                <img src="logos.png" alt="Script2Cinema Logo" class="footer-logo">
+                <p>Script2Cinema is a pioneering digital platform designed to connect filmmakers and streamline the creative process from script to screen.</p>
+                <a href="about.html" class="btn btn-outline btn-small" style="margin-top: 1rem;">About Us</a>
+            </div>
+            <div class="contact-col">
+                <h3>Contact Us</h3>
+                <p>Digital Film City,<br>Pune, Maharashtra - 411001</p><br>
+                <p><strong>Phone:</strong> <a href="tel:+919876543210">+91 98765 43210</a></p>
+                <p><strong>Email:</strong> <a href="mailto:contact@script2cinema.com">contact@script2cinema.com</a></p>
+            </div>
+            <div class="contact-col">
+                <h3>Social Media</h3>
+                <p>Follow us on our social channels to stay updated with the latest news and projects from our community.</p>
+                </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Script2Cinema. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // --- FAQ Accordion Script ---
+        const faqItems = document.querySelectorAll('.faq-item');
+
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                faqItems.forEach(otherItem => {
+                    otherItem.classList.remove('active');
+                });
+
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // --- Testimonial Slider Script ---
+        const slidesContainer = document.querySelector('.testimonial-slides');
+        const slides = document.querySelectorAll('.testimonial-slide');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        let currentIndex = 0;
+
+        function goToSlide(index) {
+            // Check if slidesContainer exists to prevent errors
+            if (slidesContainer) {
+                slidesContainer.style.transform = `translateX(-${index * 100}%)`;
+            }
+        }
+
+        function showNextSlide() {
+            currentIndex = (currentIndex + 1) % slides.length;
+            goToSlide(currentIndex);
+        }
+
+        function showPrevSlide() {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            goToSlide(currentIndex);
+        }
+
+        if (prevBtn && nextBtn) {
+            nextBtn.addEventListener('click', showNextSlide);
+            prevBtn.addEventListener('click', showPrevSlide);
+        }
+
+        // Initialize slider
+        if (slides.length > 0) {
+            goToSlide(0);
+        }
+
+    </script>
+
+</body>
+</html>
+
+

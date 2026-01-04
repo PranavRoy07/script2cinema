@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Projects - Script2Cinema</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root { --primary-color: #FF8C00; --dark-blue: #0d1b2a; --black-bg: #010409; --card-bg: #0d1117; --white-text: #f0f6fc; --grey-text: #8b949e; --border-color: #30363d; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: url('bc 4.jpg') center/cover fixed no-repeat; background-color: var(--black-bg); color: var(--white-text); }
+        header { background-color: var(--dark-blue); padding: 1rem 2rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); text-decoration: none; }
+        .nav-links { list-style: none; display: flex; gap: 1.5rem; }
+        .nav-links a { text-decoration: none; color: var(--white-text); font-weight: 500; padding: 0.5rem 0.75rem; border-radius: 6px; }
+        .nav-links a.active, .nav-links a:hover { background-color: var(--primary-color); color: var(--black-bg); }
+        .user-actions { display: flex; gap: 1rem; align-items: center; }
+        .logout-btn { background: none; border: 1px solid var(--border-color); color: var(--white-text); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; }
+        .container { max-width: 1280px; margin: 2rem auto; padding: 0 2rem; }
+        .page-header h1 { font-size: 2.2rem; }
+        .filters-bar { margin: 2rem 0; display: flex; justify-content: flex-end; }
+        
+        /* Buttons */
+        .btn { padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-weight: 600; cursor: pointer; border:none; font-size: 0.9rem; }
+        .btn-primary { background-color: var(--primary-color); color: var(--black-bg); }
+        .btn-secondary { background-color: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); }
+        .btn-secondary:hover { background-color: var(--primary-color); color: var(--black-bg); }
+        
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; }
+        .project-card { background: rgba(13, 17, 23, 0.9); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; }
+        .project-card h3 { color: var(--primary-color); margin-bottom: 0.5rem;}
+        .status-tag { background: var(--primary-color); color: #000; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; float: right; }
+        .logline { color: #ccc; font-style: italic; margin: 1rem 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;}
+        .roles-needed { margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 0.5rem; }
+        .role-tag { background: var(--dark-blue); border: 1px solid var(--border-color); padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.8rem; margin: 2px; display: inline-block; }
+        
+        .card-actions { margin-top: 1.5rem; display: flex; gap: 0.5rem; }
+        .card-actions .btn { flex: 1; text-align: center; }
+
+        /* MODAL STYLES */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
+        .modal-content { background-color: var(--card-bg); margin: 5% auto; padding: 2.5rem; border: 1px solid var(--border-color); width: 90%; max-width: 800px; border-radius: 12px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from {transform: translateY(-50px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+        .close-modal { position: absolute; top: 1rem; right: 1.5rem; color: var(--grey-text); font-size: 2rem; cursor: pointer; transition: color 0.2s; line-height: 1; }
+        .close-modal:hover { color: var(--primary-color); }
+        
+        .detail-group { margin-bottom: 2rem; }
+        .detail-label { display: block; font-size: 0.85rem; color: var(--grey-text); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; border-left: 3px solid var(--primary-color); padding-left: 10px; }
+        .detail-value { font-size: 1.1rem; color: var(--white-text); line-height: 1.7; white-space: pre-wrap; }
+        .roles-list-lg { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+        .role-tag-lg { background: var(--dark-blue); border: 1px solid var(--primary-color); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; color: var(--white-text); }
+        
+    </style>
+</head>
+<body>
+    <header>
+        <a href="dash.html" class="logo">Script2Cinema</a>
+        <ul class="nav-links">
+            <li><a href="dash.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="project.html" class="active"><i class="fas fa-folder"></i> Projects</a></li>
+            <li><a href="collab.html"><i class="fas fa-users"></i> Collaborators</a></li>
+            <li><a href="message.html"><i class="fas fa-envelope"></i> Message</a></li>
+            <li><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
+        </ul>
+        <div class="user-actions">
+            <span id="user-welcome">Loading...</span>
+            <button id="logout-btn" class="logout-btn">Logout</button>
+        </div>
+    </header>
+    
+    <main class="container">
+        <div class="page-header">
+            <h1>All Projects</h1>
+            <p>Find your next collaboration.</p>
+        </div>
+        <div class="filters-bar">
+            <a href="create.html" class="btn btn-primary"><i class="fas fa-plus"></i> Create New Project</a>
+        </div>
+        <div id="project-grid" class="project-grid"></div>
+    </main>
+
+    <div id="project-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                <h1 id="modal-title" style="margin: 0; color: var(--primary-color);">Project Title</h1>
+                <span id="modal-status" class="status-tag" style="float: none; font-size: 1rem; padding: 0.4rem 1rem;">Status</span>
+            </div>
+            
+            <div class="detail-group">
+                <span class="detail-label">Logline</span>
+                <div id="modal-logline" class="detail-value" style="font-style: italic; color: #ccc;"></div>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Full Description</span>
+                <div id="modal-description" class="detail-value"></div>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Looking For Roles</span>
+                <div id="modal-roles" class="roles-list-lg"></div>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Created By</span>
+                <div id="modal-creator" class="detail-value" style="display: flex; align-items: center; gap: 10px;">
+                    Loading...
+                </div>
+            </div>
+
+            <div id="modal-actions" style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 1rem; border-top: 1px solid var(--border-color); padding-top: 2rem;">
+                </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJzGN3RURMAvSSk2OkxTj9I6JMsyrdVEc",
+      authDomain: "script2cinema-86afa.firebaseapp.com",
+      projectId: "script2cinema-86afa",
+      storageBucket: "script2cinema-86afa.appspot.com",
+      messagingSenderId: "709129400285",
+      appId: "1:709129400285:web:8e32274e9c605ffc7ed034"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth(), db = firebase.firestore();
+
+    let me = null;
+
+    auth.onAuthStateChanged(async user => {
+        if (!user) return window.location.href = "login.html";
+        const snap = await db.collection("users").doc(user.uid).get();
+        me = { uid: user.uid, ...snap.data() };
+        document.getElementById("user-welcome").textContent = `Welcome, ${me.name}`;
+        
+        loadProjects();
+
+        // CHECK URL FOR DIRECT LINK (collab-profile-project flow)
+        const params = new URLSearchParams(window.location.search);
+        const projectId = params.get('id');
+        if(projectId) {
+            openProjectDetails(projectId);
+        }
+    });
+
+    async function loadProjects() {
+        const grid = document.getElementById("project-grid");
+        const snap = await db.collection("projects").orderBy("createdAt", "desc").get();
+        grid.innerHTML = "";
+        
+        if(snap.empty) { grid.innerHTML = "<p>No projects yet.</p>"; return; }
+
+        snap.forEach(doc => {
+            const p = doc.data();
+            const isOwner = p.creatorId === me.uid;
+            
+            // Buttons Logic
+            let applyBtn = "";
+            if (isOwner) {
+                applyBtn = `<button class="btn btn-secondary" style="cursor:default; opacity:0.5;">Owner</button>`;
+            } else {
+                applyBtn = `<button class="btn btn-primary apply-btn" 
+                        data-pid="${doc.id}" 
+                        data-pname="${p.title}" 
+                        data-cid="${p.creatorId}">Apply to Join</button>`;
+            }
+
+            const roles = (p.requiredRoles || []).slice(0, 3).map(r => `<span class="role-tag">${r}</span>`).join("");
+            const extraRoles = (p.requiredRoles || []).length > 3 ? `<span class="role-tag">+${p.requiredRoles.length - 3} more</span>` : '';
+
+            grid.innerHTML += `
+                <div class="project-card">
+                    <div>
+                        <h3>${p.title} <span class="status-tag">${p.status}</span></h3>
+                        <p class="logline">${p.logline}</p>
+                        <div class="roles-needed">${roles} ${extraRoles}</div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn btn-secondary" onclick="openProjectDetails('${doc.id}')">Read</button>
+                        ${applyBtn}
+                    </div>
+                </div>`;
+        });
+    }
+
+    // --- MODAL LOGIC ---
+    const modal = document.getElementById("project-modal");
+    const closeBtn = document.querySelector(".close-modal");
+
+    closeBtn.onclick = () => { modal.style.display = "none"; }
+    window.onclick = (e) => { if(e.target == modal) modal.style.display = "none"; }
+
+    window.openProjectDetails = async (pid) => {
+        try {
+            const doc = await db.collection("projects").doc(pid).get();
+            if(!doc.exists) { alert("Project not found"); return; }
+            
+            const p = doc.data();
+            
+            // Populate Modal
+            document.getElementById("modal-title").innerText = p.title;
+            document.getElementById("modal-status").innerText = p.status;
+            document.getElementById("modal-logline").innerText = p.logline;
+            document.getElementById("modal-description").innerText = p.description;
+            
+            // Roles
+            const rolesHtml = (p.requiredRoles || []).map(r => `<span class="role-tag-lg">${r}</span>`).join("");
+            document.getElementById("modal-roles").innerHTML = rolesHtml;
+
+            // Creator Info
+            const uSnap = await db.collection("users").doc(p.creatorId).get();
+            const creatorName = uSnap.exists ? uSnap.data().name : "Unknown";
+            document.getElementById("modal-creator").innerHTML = `<i class="fas fa-user-circle"></i> <a href="profile.html?id=${p.creatorId}" style="color:var(--primary-color); text-decoration:none;">${creatorName}</a>`;
+
+            // Action Button
+            const actionsDiv = document.getElementById("modal-actions");
+            const isOwner = p.creatorId === me.uid;
+            
+            if(isOwner) {
+                actionsDiv.innerHTML = `<button class="btn btn-secondary" disabled>You own this project</button>`;
+            } else {
+                actionsDiv.innerHTML = `<button class="btn btn-primary apply-btn" 
+                        data-pid="${doc.id}" 
+                        data-pname="${p.title}" 
+                        data-cid="${p.creatorId}"
+                        onclick="handleApplyFromModal(this)">Apply to Join</button>`;
+            }
+
+            modal.style.display = "block";
+
+        } catch (e) {
+            console.error(e);
+            alert("Error loading project details.");
+        }
+    }
+
+    // --- APPLY LOGIC (Shared) ---
+    // Handle click from GRID
+    document.getElementById("project-grid").addEventListener("click", async e => {
+        if (e.target.classList.contains("apply-btn")) {
+            await handleApplyLogic(e.target);
+        }
+    });
+
+    // Handle click from MODAL
+    window.handleApplyFromModal = async (btn) => {
+        await handleApplyLogic(btn);
+    }
+
+    async function handleApplyLogic(btn) {
+        const pid = btn.dataset.pid;
+        const pname = btn.dataset.pname;
+        const cid = btn.dataset.cid;
+
+        btn.disabled = true;
+        btn.textContent = "Sending...";
+
+        try {
+            // Check Duplicate
+            const dup = await db.collection("joinRequests")
+                .where("projectId", "==", pid)
+                .where("requesterId", "==", me.uid)
+                .get();
+
+            if (!dup.empty) {
+                alert("You have already applied to this project.");
+                btn.textContent = "Applied";
+                return;
+            }
+
+            // Send Request
+            await db.collection("joinRequests").add({
+                projectId: pid,
+                projectName: pname,
+                creatorId: cid, 
+                requesterId: me.uid,
+                requesterName: me.name,
+                status: "pending",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            alert("Application Sent Successfully!");
+            btn.textContent = "Request Sent";
+            btn.style.backgroundColor = "green";
+            btn.style.color = "white";
+
+        } catch (err) {
+            console.error(err);
+            alert("Error: " + err.message);
+            btn.disabled = false;
+            btn.textContent = "Apply to Join";
+        }
+    }
+
+    document.getElementById("logout-btn").onclick = () => auth.signOut().then(() => window.location.href = "login.html");
+    </script>
+</body>
+</html>

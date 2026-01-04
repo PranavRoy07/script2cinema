@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Script2Cinema</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-color: #FF8C00; --dark-bg: #1a1a1a; --light-bg: #f9f4f0; --text-color: #333; --font-family: 'Poppins', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-family);
+            background-color: #fff;
+            color: var(--text-color);
+            
+            background-image: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url('lo-sign bc.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            
+        }
+        header { background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); padding: 1rem 5%; border-bottom: 1px solid #e0e0e0; }
+        nav { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
+        .logo { height: 50px; }
+        .nav-links { list-style: none; display: flex; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: var(--text-color); font-weight: 500; transition: color 0.3s ease; }
+        .nav-links a:hover { color: var(--primary-color); }
+        .nav-buttons .btn { margin-left: 1rem; padding: 0.6rem 1.5rem; border-radius: 5px; text-decoration: none; font-weight: 600; }
+        .btn-outline { border: 2px solid #333; color: #333; }
+        .btn-primary { background-color: var(--primary-color); color: white; border: 2px solid var(--primary-color); }
+        .auth-container { display: flex; justify-content: center; align-items: center; padding: 4rem 5%; min-height: 80vh; }
+        .auth-box { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-around; 
+            width: 100%; 
+            max-width: 1000px; 
+            gap: 2rem; 
+            background-color: #ffffff; 
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+        .auth-form-section { max-width: 400px; width: 100%; }
+        .auth-form-section .form-header p { font-size: 0.9rem; color: #888; margin-bottom: 0.5rem; }
+        .auth-form-section .form-header h2 { font-size: 2rem; margin-bottom: 2rem; font-weight: 600; }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { font-size: 0.9rem; color: #333; margin-bottom: 0.5rem; display: block; }
+        input, select { width: 100%; padding: 1rem; border: none; border-radius: 8px; background-color: var(--light-bg); font-family: var(--font-family); font-size: 1rem; color: var(--text-color); }
+        #roles-checkbox-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            background-color: var(--light-bg);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        .role-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .role-option input[type="checkbox"] {
+            width: auto;
+            accent-color: var(--primary-color);
+        }
+        .role-option label {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+        
+        #other-role-group {
+            display: none;
+        }
+        
+        .checkbox-group { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .checkbox-group label { font-size: 0.9rem; }
+        .checkbox-group a { color: var(--primary-color); text-decoration: none; font-weight: 600; }
+        .btn-full { width: 100%; padding: 1rem; border: none; border-radius: 8px; background-color: var(--dark-bg); color: white; font-size: 1.1rem; font-weight: 600; cursor: pointer; }
+        .auth-switch { text-align: center; margin-top: 1.5rem; }
+        .auth-switch a { color: var(--primary-color); text-decoration: none; font-weight: 600; }
+        .auth-image-section { max-width: 450px; }
+        .auth-image-section img { width: 100%; height: auto; }
+        @media (max-width: 900px) { .auth-image-section { display: none; } .auth-form-section { margin: 0 auto; } .auth-box { padding: 2rem; } }
+        @media (max-width: 768px) { .nav-links { display: none; } }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html"><img src="logos.png" alt="Script2Cinema Logo" class="logo"></a>
+            <ul class="nav-links">
+                <li><a href="index.html#hero">Home</a></li>
+                <li><a href="index.html#about">About Us</a></li>
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="index.html#story">Our Story</a></li>
+                <li><a href="index.html#mission">Our Mission</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <a href="login.html" class="btn btn-outline">Log In</a>
+                <a href="signup.html" class="btn btn-primary">Sign Up</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="auth-container">
+        <div class="auth-box">
+            <div class="auth-form-section">
+                <div class="form-header">
+                    <p>*Mark fields are mandatory</p>
+                    <h2>Register your Account</h2>
+                </div>
+                <form id="signup-form">
+                    <div class="form-group">
+                        <input type="text" id="full-name" placeholder="Full Name*" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" placeholder="Email Address*" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="password" placeholder="Password*" required>
+                    </div>
+                    <div class="form-group">
+                         <select id="country" required>
+                            <option value="" disabled selected>Select your country*</option>
+                            <option value="usa">United States</option>
+                            <option value="canada">Canada</option>
+                            <option value="uk">United Kingdom</option>
+                            <option value="australia">Australia</option>
+                            <option value="india">India</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" id="phone" placeholder="Phone Number*" required 
+                               maxlength="10" 
+                               pattern="{10}" 
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
+                               title="Please enter exactly 10 digits">
+                    </div>
+                    <div class="form-group">
+                        <label>Select your role(s)*</label>
+                        <div id="roles-checkbox-container">
+                            <div class="role-option"><input type="checkbox" id="role-writer" name="roles" value="Writer"><label for="role-writer">Writer</label></div>
+                            <div class="role-option"><input type="checkbox" id="role-director" name="roles" value="Director"><label for="role-director">Director</label></div>
+                            <div class="role-option"><input type="checkbox" id="role-producer" name="roles" value="Producer"><label for="role-producer">Producer</label></div>
+                            <div class="role-option"><input type="checkbox" id="role-exec-producer" name="roles" value="Executive Producer"><label for="role-exec-producer">Executive Producer</label></div>
+                            <div class="role-option"><input type="checkbox" id="role-asst-director" name="roles" value="Assistant Director"><label for="role-asst-director">Assistant Director</label></div>
+                            <div class="role-option"><input type="checkbox" id="role-casting" name="roles" value="Casting Director"><label for="role-casting">Casting Director</label></div>
+                            <div class="role-option"><input type="checkbox" id="role-cinematographer" name="roles" value="Cinematographer"><label for="role-cinematographer">Cinematographer</label></div>
+                            <div class="role-option"><input type="checkbox" id="role-editor" name="roles" value="Editor"><label for="role-editor">Editor</label></div>
+                            <div class="role-option"><input type="checkbox" id="role-vfx" name="roles" value="VFX Artist"><label for="role-vfx">VFX Artist</label></div>
+                            <div class="role-option"><input type="checkbox" id="role-musician" name="roles" value="Musician"><label for="role-musician">Musician</label></div>
+                            <div class="role-option"><input type="checkbox" id="role-choreographer" name="roles" value="Choreographer"><label for="role-choreographer">Choreographer</label></div>
+                            <div class="role-option"><input type="checkbox" id="role-action-dir" name="roles" value="Action Director"><label for="role-action-dir">Action Director</label></div>
+                            <div class="role-option"><input type="checkbox" id="role-makeup" name="roles" value="Make-up team"><label for="role-makeup">Make-up Team</label></div>
+                            <div class="role-option"><input type="checkbox" id="role-costume" name="roles" value="Costume Designer"><label for="role-costume">Costume Designer</label></div>
+                            <div class="role-option"><input type="checkbox" id="role-lyricist" name="roles" value="Lyricist"><label for="role-lyricist">Lyricist</label></div>
+                            <div class="role-option"><input type="checkbox" id="role-other" name="roles" value="Other"><label for="role-other">Other</label></div>
+                            </div>
+                    </div>
+                    <div class="form-group" id="other-role-group">
+                        <label for="other-role-input">Please specify your role:</label>
+                        <input type="text" id="other-role-input" placeholder="e.g., Sound Designer">
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="terms" required>
+                        <label for="terms">I agree to the <a href="terms.html">Terms and Conditions</a></label>
+                    </div>
+                    <button type="submit" class="btn-full">REGISTER</button>
+                </form>
+                <p class="auth-switch">Already have an account? <a href="login.html">Login</a></p>
+            </div>
+            <div class="auth-image-section">
+                <img src="signup.png" alt="Illustration of hands holding a movie clapperboard">
+            </div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJzGN3RURMAvSSk2OkxTj9I6JMsyrdVEc",
+            authDomain: "script2cinema-86afa.firebaseapp.com",
+            projectId: "script2cinema-86afa",
+            storageBucket: "script2cinema-86afa.appspot.com",
+            messagingSenderId: "709129400285",
+            appId: "1:709129400285:web:8e32274e9c605ffc7ed034",
+            measurementId: "G-DJS647QLNG"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const signupForm = document.getElementById('signup-form');
+
+        
+        const otherCheckbox = document.getElementById('role-other');
+        const otherRoleGroup = document.getElementById('other-role-group');
+        otherCheckbox.addEventListener('change', () => {
+            if (otherCheckbox.checked) {
+                otherRoleGroup.style.display = 'block';
+            } else {
+                otherRoleGroup.style.display = 'none';
+            }
+        });
+        
+
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const fullName = document.getElementById('full-name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+           
+            const phone = document.getElementById('phone').value;
+            const country = document.getElementById('country').value; 
+
+            if (phone.length !== 10) {
+                alert('Phone number must be exactly 10 digits.');
+                return;
+            }
+
+            const selectedRoles = [];
+            const roleCheckboxes = document.querySelectorAll('input[name="roles"]:checked');
+            
+        
+            const otherRoleInput = document.getElementById('other-role-input');
+            
+            roleCheckboxes.forEach((checkbox) => {
+                if (checkbox.value === 'Other') {
+                    const otherRoleText = otherRoleInput.value.trim();
+                    if (otherRoleText) {
+                        selectedRoles.push(otherRoleText); 
+                    }
+                } else {
+                    selectedRoles.push(checkbox.value); 
+                }
+            });
+            
+
+            if (selectedRoles.length === 0) {
+                alert('Please select at least one role to continue.');
+                return;
+            }
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    return db.collection('users').doc(user.uid).set({
+                        name: fullName,
+                        email: email,
+                        phone: phone, 
+                        country: country, 
+                        roles: selectedRoles,
+                        joined: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                })
+                .then(() => {
+                    console.log('User account created & data saved!');
+                    window.location.href = 'dash.html';
+                })
+                .catch((error) => {
+                    console.error("Error during registration: ", error);
+                    alert(error.message);
+                });
+        });
+    </script>
+    </body>
+</html>

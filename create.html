@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Project - Script2Cinema</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root { --primary-color: #FF8C00; --dark-blue: #0d1b2a; --black-bg: #010409; --card-bg: #0d1117; --white-text: #f0f6fc; --grey-text: #8b949e; --border-color: #30363d; --font-family: 'Poppins', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+      background-image: url('bc 5.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+        body { font-family: var(--font-family); background-color: var(--black-bg); color: var(--white-text); display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+        .back-link { align-self: flex-start; margin-bottom: 2rem; color: var(--grey-text); text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .back-link:hover { color: var(--primary-color); }
+        .create-project-container { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem 3rem; width: 100%; max-width: 700px; }
+        .form-header { text-align: center; margin-bottom: 2.5rem; }
+        .header-icon { width: 60px; height: 60px; border-radius: 50%; background-color: var(--primary-color); color: var(--black-bg); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.8rem; }
+        .form-header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .form-header p { color: var(--grey-text); }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-group label span { color: var(--primary-color); }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.9rem; background-color: var(--black-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--white-text); font-family: var(--font-family); font-size: 1rem; }
+        .form-group textarea { min-height: 100px; resize: vertical; }
+        .form-group p.helper-text { font-size: 0.8rem; color: var(--grey-text); margin-top: 0.3rem; }
+        
+        /* START: Required Roles Styles */
+        #role-search { margin-bottom: 1rem; }
+        #roles-container { display: flex; flex-wrap: wrap; gap: 0.75rem; max-height: 200px; overflow-y: auto; padding: 1rem; background-color: var(--black-bg); border-radius: 8px; }
+        .role-tag { padding: 0.5rem 1rem; background-color: var(--dark-blue); border: 1px solid var(--border-color); color: var(--white-text); border-radius: 20px; cursor: pointer; transition: all 0.2s ease-in-out; }
+        .role-tag:hover { border-color: var(--primary-color); }
+        .role-tag.selected { background-color: var(--primary-color); color: var(--black-bg); font-weight: 600; border-color: var(--primary-color); transform: scale(1.05); }
+        /* END: Required Roles Styles */
+
+        .form-actions { margin-top: 2.5rem; display: flex; justify-content: flex-end; gap: 1rem; }
+        .btn { padding: 0.8rem 1.8rem; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: filter 0.3s; font-size: 1rem; }
+        .btn-primary { background: linear-gradient(90deg, var(--primary-color), #ffb700); color: var(--black-bg); }
+        .btn-primary:hover { filter: brightness(1.1); }
+        .btn-secondary { background-color: var(--card-bg); color: var(--grey-text); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background-color: var(--border-color); color: var(--white-text); }
+    </style>
+</head>
+<body>
+    <a href="dash.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+
+    <div class="create-project-container">
+        <div class="form-header">
+            <div class="header-icon"><i class="fas fa-film"></i></div>
+            <h1>Create New Project</h1>
+            <p>Start your next filmmaking venture and find the perfect team</p>
+        </div>
+
+        <form id="create-project-form">
+            <div class="form-group">
+                <label for="project-title">Project Title <span>*</span></label>
+                <input type="text" id="project-title" placeholder="Enter your project title" required>
+            </div>
+            <div class="form-group">
+                <label for="logline">Logline <span>*</span></label>
+                <input type="text" id="logline" placeholder="A one-sentence summary of your project" required>
+                <p class="helper-text">Keep it concise - this is what collaborators will see first</p>
+            </div>
+            <div class="form-group">
+                <label for="description">Detailed Description <span>*</span></label>
+                <textarea id="description" placeholder="Provide a detailed description of your project..." required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="project-status">Project Status</label>
+                <select id="project-status">
+                    <option>Development</option>
+                    <option>Pre-Production</option>
+                    <option>Production</option>
+                    <option>Post-Production</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="role-search">Required Roles</label>
+                <input type="text" id="role-search" placeholder="Search for roles...">
+                <div id="roles-container"></div>
+            </div>
+            <div class="form-actions">
+                <a href="dash.html" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Create Project</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJzGN3RURMAvSSk2OkxTj9I6JMsyrdVEc",
+            authDomain: "script2cinema-86afa.firebaseapp.com",
+            projectId: "script2cinema-86afa",
+            storageBucket: "script2cinema-86afa.appspot.com",
+            messagingSenderId: "709129400285",
+            appId: "1:709129400285:web:8e32274e9c605ffc7ed034",
+            measurementId: "G-DJS647QLNG"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // --- START: Role Selector Logic ---
+        const allRoles = [
+            'Writer', 'Director', 'Producer', 'Executive Producer', 'Assistant Director',
+            'Casting Director', 'Cinematographer', 'Editor', 'VFX Artist', 'Musician',
+            'Choreographer', 'Action Director', 'Make-up Team', 'Costume Designer'
+        ];
+        const rolesContainer = document.getElementById('roles-container');
+        const roleSearchInput = document.getElementById('role-search');
+
+        function renderRoles(filter = '') {
+            rolesContainer.innerHTML = '';
+            const filteredRoles = allRoles.filter(role => role.toLowerCase().includes(filter.toLowerCase()));
+            
+            filteredRoles.forEach(role => {
+                const tag = document.createElement('div');
+                tag.className = 'role-tag';
+                tag.textContent = role;
+                tag.dataset.role = role;
+                tag.addEventListener('click', () => {
+                    tag.classList.toggle('selected');
+                });
+                rolesContainer.appendChild(tag);
+            });
+        }
+        
+        roleSearchInput.addEventListener('input', () => renderRoles(roleSearchInput.value));
+        renderRoles(); // Initial render
+        // --- END: Role Selector Logic ---
+
+        const createProjectForm = document.getElementById('create-project-form');
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                createProjectForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+
+                    const title = document.getElementById('project-title').value;
+                    const logline = document.getElementById('logline').value;
+                    const description = document.getElementById('description').value;
+                    const status = document.getElementById('project-status').value;
+
+                    // Get selected roles
+                    const selectedRoles = [];
+                    document.querySelectorAll('.role-tag.selected').forEach(tag => {
+                        selectedRoles.push(tag.dataset.role);
+                    });
+
+                    db.collection('projects').add({
+                        title: title,
+                        logline: logline,
+                        description: description,
+                        status: status,
+                        requiredRoles: selectedRoles, // Add required roles to the document
+                        creatorId: user.uid,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(() => {
+                        alert('Project created successfully!');
+                        window.location.href = 'project.html'; // Redirect to project page
+                    }).catch((error) => {
+                        console.error("Error adding document: ", error);
+                        alert('Error creating project. Please try again.');
+                    });
+                });
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>

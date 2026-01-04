@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messages – Script2Cinema</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://upload-widget.cloudinary.com/global/all.js"></script>
+
+<style>
+:root{--primary:#ff9800;--glass:rgba(17,25,40,.95);--border:rgba(255,255,255,.1);--text:#e5e7eb;--muted:#9ca3af}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:Poppins,sans-serif;background:url('bc 3.jpg') center/cover fixed no-repeat;color:var(--text);overflow:hidden;background-color:#0b1118}
+header{height:70px;display:flex;justify-content:space-between;align-items:center;padding:0 2rem;background:#0d141e;border-bottom:1px solid var(--border)}
+.logo{font-size:1.6rem;font-weight:700;color:var(--primary);text-decoration: none;}
+.nav{display:flex;gap:1.4rem}
+.nav a{color:var(--text);text-decoration:none;padding:.45rem .8rem;border-radius:6px;transition:0.3s}
+.nav a.active,.nav a:hover{background:var(--primary);color:#000}
+.user-area{display:flex;gap:1rem;align-items:center}
+.logout{background:none;border:1px solid var(--border);color:var(--text);padding:.4rem .9rem;border-radius:6px;cursor:pointer}
+
+.container{height:calc(100vh - 70px);padding:1rem;max-width:1400px;margin:0 auto}
+.layout{height:100%;display:grid;grid-template-columns:360px 1fr;gap:1.2rem;min-height:0}
+.left{display:flex;flex-direction:column;gap:1rem;min-height:0}
+
+/* CONVERSATIONS */
+.conversations{flex:1;background:var(--glass);border-radius:14px;border:1px solid var(--border);display:flex;flex-direction:column;min-height:0}
+.conversations h3{padding:1rem;border-bottom:1px solid var(--border);font-size:1rem;letter-spacing:1px}
+.convo-list{flex:1;overflow-y:auto}
+.convo{display:flex;gap:.8rem;padding:1rem;cursor:pointer;align-items:center;border-bottom:1px solid rgba(255,255,255,0.05)}
+.convo:hover,.convo.active{background:rgba(255,255,255,.04)}
+.avatar{width:44px;height:44px;border-radius:50%;background:#1f2937;display:flex;align-items:center;justify-content:center;font-weight:600;overflow:hidden;flex-shrink:0}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.convo-info strong{display:block;margin-bottom:2px}
+.convo-info p{font-size:.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+/* New Unread Style */
+.convo.unread .convo-info strong { color: var(--primary); }
+.convo.unread .convo-info p { color: #fff; font-weight: 600; }
+
+/* REQUESTS */
+.requests{height:40%;background:var(--glass);border-radius:14px;border:1px solid var(--border);display:flex;flex-direction:column;min-height:0}
+.requests h3{padding:1rem;border-bottom:1px solid var(--border);font-size:1rem}
+.req-list{flex:1;overflow-y:auto;padding:0.5rem}
+.req-section-title{font-size:0.75rem;color:var(--muted);margin:10px 5px 5px 5px;text-transform:uppercase;font-weight:600}
+.req{background:rgba(255,255,255,.03);padding:.8rem;border-radius:10px;margin-bottom:.5rem;border:1px solid var(--border)}
+.req-info{margin-bottom:8px}
+.req-actions{display:flex;gap:8px}
+.req button{flex:1;background:none;border:1px solid;border-radius:6px;padding:.4rem;font-size:.75rem;cursor:pointer;font-weight:600}
+.accept{color:#22c55e;border-color:#22c55e}
+.accept:hover{background:rgba(34,197,94,0.1)}
+.reject{color:#ef4444;border-color:#ef4444}
+.reject:hover{background:rgba(239,68,68,0.1)}
+
+/* CHAT AREA */
+.chat{background:var(--glass);border-radius:16px;border:1px solid var(--border);display:flex;flex-direction:column;min-height:0}
+.chat-header{height:68px;display:flex;align-items:center;gap:1rem;padding:0 1.5rem;border-bottom:1px solid var(--border)}
+.messages{flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:1rem}
+.msg{max-width:70%;display:flex;gap:.6rem;align-items:flex-end}
+.msg .bubble{padding:.75rem 1rem;border-radius:18px;line-height:1.4;word-break:break-word}
+.sent{align-self:flex-end;flex-direction:row-reverse}
+.sent .bubble{background:var(--primary);color:#000;border-bottom-right-radius:4px}
+.received{align-self:flex-start}
+.received .bubble{background:#1f2937;border-bottom-left-radius:4px}
+.msg img,.msg video{max-width:100%;max-height:300px;border-radius:12px;margin-top:.5rem;cursor:pointer}
+
+/* INPUT AREA */
+.chat-input{display:flex;gap:.8rem;padding:1rem;border-top:1px solid var(--border);align-items:center}
+.chat-input input{flex:1;background:#0b1118;border:1px solid var(--border);color:var(--text);padding:.8rem 1rem;border-radius:12px;outline:none}
+.chat-input input:focus{border-color:var(--primary)}
+.icon-btn{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:0.5rem;transition:0.2s}
+.icon-btn:hover{color:var(--primary)}
+.send{background:var(--primary);border:none;color:#000;padding:.6rem 1.2rem;border-radius:10px;cursor:pointer;font-weight:600}
+
+/* NOTIFICATION TOAST */
+#notification-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: var(--dark-blue);
+  color: #fff;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  z-index: 9999;
+  transform: translateX(120%);
+  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  border-left: 5px solid var(--primary);
+  max-width: 350px;
+}
+#notification-toast.show { transform: translateX(0); }
+#notification-toast img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+#notification-toast div { display: flex; flex-direction: column; }
+#notification-toast strong { font-size: 0.9rem; color: var(--primary); }
+#notification-toast p { font-size: 0.8rem; margin: 0; color: #ccc; }
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .container{padding:0;height:calc(100vh - 70px)}
+  .layout{grid-template-columns:1fr;gap:0}
+  .chat{display:none}
+  body.show-chat .left{display:none}
+  body.show-chat .chat{display:flex;height:100%}
+  .back-btn{display:block!important}
+}
+.back-btn{display:none;font-size:1.2rem;cursor:pointer;margin-right:10px}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="dash.html" >Script2Cinema</a>
+  <ul class="nav">
+    <li><a href="dash.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+      <li><a href="project.html"><i class="fas fa-folder"></i> Projects</a></li>
+      <li><a href="collab.html"><i class="fas fa-users"></i> Collaborators</a></li>
+      <li><a href="message.html" class="active"><i class="fas fa-envelope"></i> Message</a></li>
+      <li><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
+    </ul>
+  <div class="user-area">
+    <span id="welcome">Loading...</span>
+    <button class="logout" id="logout">Logout</button>
+  </div>
+</header>
+
+<div id="notification-toast">
+    <img id="toast-img" src="" alt="">
+    <div>
+        <strong id="toast-title">New Message</strong>
+        <p id="toast-body">...</p>
+    </div>
+</div>
+
+<div class="container">
+  <div class="layout">
+    
+    <div class="left">
+      <div class="conversations">
+        <h3>Conversations</h3>
+        <div class="convo-list" id="convoList"></div>
+      </div>
+      <div class="requests">
+        <h3>Requests</h3>
+        <div class="req-list">
+          <div id="connReqs"></div>
+          <div id="projReqs"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat" id="chatArea">
+      <div class="chat-header">
+        <i class="fas fa-arrow-left back-btn" onclick="closeChat()"></i>
+        <div class="avatar" id="chatAvatar" style="opacity:0"></div>
+        <h3 id="chatName">Select a conversation</h3>
+      </div>
+      <div class="messages" id="messages">
+        <p style="text-align:center;margin-top:20%;color:var(--muted)">Select a chat to start messaging</p>
+      </div>
+      <div class="chat-input">
+        <button class="icon-btn" id="attach"><i class="fas fa-paperclip"></i></button>
+        <input id="text" placeholder="Type a message…" disabled>
+        <button class="send" id="send" disabled><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<script>
+// 1. FIREBASE CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyAJzGN3RURMAvSSk2OkxTj9I6JMsyrdVEc",
+  authDomain: "script2cinema-86afa.firebaseapp.com",
+  projectId: "script2cinema-86afa",
+  storageBucket: "script2cinema-86afa.appspot.com",
+  messagingSenderId: "709129400285",
+  appId: "1:709129400285:web:8e32274e9c605ffc7ed034"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth(), db = firebase.firestore();
+
+// 2. STATE
+let me = null, activeChat = null, widget = null;
+const notificationSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3'); 
+
+// 3. INIT & AUTH
+auth.onAuthStateChanged(async u => {
+  if (!u) return location.href = "login.html";
+  
+  try {
+    const d = await db.collection("users").doc(u.uid).get();
+    me = { uid: u.uid, ...d.data() };
+    document.getElementById("welcome").textContent = `Welcome, ${me.name}`;
+    
+    loadConvos();
+    loadReqs();
+    setupUpload();
+    
+    // Auto Connect URL Params
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetId = urlParams.get('chatWith');
+    if(targetId) handleAutoConnect(targetId);
+  } catch(e) { console.error(e); }
+});
+
+// 4. LOAD CONVERSATIONS & LISTEN FOR NEW MESSAGES GLOBALLY
+function loadConvos() {
+  db.collection("chats").where("participants", "array-contains", me.uid)
+    .orderBy("lastMessageTimestamp", "desc")
+    .onSnapshot(s => {
+      const list = document.getElementById("convoList");
+      list.innerHTML = "";
+      if (s.empty) list.innerHTML = "<p style='padding:1rem;color:grey;text-align:center'>No chats yet.</p>";
+      
+      s.forEach(doc => {
+        const c = doc.data();
+        const otherId = c.participants.find(i => i !== me.uid);
+        const info = c.participantInfo ? c.participantInfo[otherId] : {name:"User", photoURL:null};
+        
+        // CHECK FOR NEW MESSAGES TO NOTIFY
+        // We check if the update is recent (less than 2 seconds ago) to avoid spamming on page load
+        const now = new Date().getTime();
+        const msgTime = c.lastMessageTimestamp ? c.lastMessageTimestamp.toMillis() : 0;
+        const isRecent = (now - msgTime) < 5000; 
+
+        // IF: Message is recent AND I didn't send it AND this chat is NOT open
+        if (isRecent && c.lastSenderId !== me.uid && activeChat !== doc.id) {
+             showNotification(info.name, c.lastMessage, info.photoURL);
+        }
+
+        const div = document.createElement("div");
+        // Add 'unread' class if needed (simplified logic here: if it's recent and not open)
+        const isUnread = (isRecent && c.lastSenderId !== me.uid && activeChat !== doc.id);
+        div.className = `convo ${activeChat === doc.id ? 'active' : ''} ${isUnread ? 'unread' : ''}`;
+        
+        div.innerHTML = `
+          <div class="avatar">${info.photoURL ? `<img src="${info.photoURL}">` : info.name?.[0] || "?"}</div>
+          <div class="convo-info">
+            <strong>${info.name}</strong>
+            <p>${c.lastMessage || "New Chat"}</p>
+          </div>`;
+        div.onclick = () => openChat(doc.id, info);
+        list.appendChild(div);
+      });
+    });
+}
+
+// 5. TOAST NOTIFICATION FUNCTION
+function showNotification(name, message, photo) {
+    const toast = document.getElementById("notification-toast");
+    const title = document.getElementById("toast-title");
+    const body = document.getElementById("toast-body");
+    const img = document.getElementById("toast-img");
+    
+    // Play Sound
+    notificationSound.play().catch(e => console.log("Audio play blocked"));
+
+    // Set Content
+    title.innerText = name;
+    body.innerText = message;
+    img.src = photo || "https://ui-avatars.com/api/?name=" + name + "&background=random";
+    
+    // Show
+    toast.classList.add("show");
+    
+    // Hide after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 4000);
+}
+
+// 6. LOAD REQUESTS (Robust Logic)
+function loadReqs() {
+  // A. Connections
+  db.collection("connections")
+    .where("participants", "array-contains", me.uid)
+    .where("status", "==", "pending")
+    .onSnapshot(s => {
+      const box = document.getElementById("connReqs");
+      box.innerHTML = "";
+      let has = false;
+      s.forEach(doc => {
+        const d = doc.data();
+        if (d.requesterId !== me.uid) { // I am the receiver
+          has = true;
+          box.innerHTML += createReqHTML(doc.id, d.requesterName, "wants to connect", "Conn", d.requesterId);
+        }
+      });
+      if(has) box.insertAdjacentHTML('afterbegin', '<div class="req-section-title">Connections</div>');
+    });
+
+  // B. Projects
+  db.collection("joinRequests")
+    .where("creatorId", "==", me.uid)
+    .where("status", "==", "pending")
+    .onSnapshot(s => {
+      const box = document.getElementById("projReqs");
+      box.innerHTML = "";
+      let has = false;
+      s.forEach(doc => {
+        const d = doc.data();
+        has = true;
+        box.innerHTML += createReqHTML(doc.id, d.requesterName, `wants to join: ${d.projectName}`, "Proj", d.requesterId, d.projectId, d.projectName);
+      });
+      if(has) box.insertAdjacentHTML('afterbegin', '<div class="req-section-title">Project Joins</div>');
+    });
+}
+
+// HTML Generator with Safety Checks
+function createReqHTML(id, name, text, type, rid, pid, pname) {
+  const safePid = pid || "";
+  const safePname = pname || "";
+  
+  return `
+    <div class="req" id="req-${id}">
+      <div class="req-info"><strong>${name}</strong> <small>${text}</small></div>
+      <div class="req-actions">
+        <button class="accept" onclick="handleReq('${id}','accept','${type}','${rid}','${safePid}','${safePname}')">Accept</button>
+        <button class="reject" onclick="handleReq('${id}','reject','${type}')">Reject</button>
+      </div>
+    </div>`;
+}
+
+// 7. HANDLE REQUESTS
+window.handleReq = async (id, action, type, rid, pid, pname) => {
+  const reqEl = document.getElementById(`req-${id}`);
+  if(reqEl) reqEl.style.opacity = "0.5";
+
+  try {
+    const coll = type === "Conn" ? "connections" : "joinRequests";
+    
+    if (action === "reject") {
+      await db.collection(coll).doc(id).update({ status: "declined" });
+      return;
+    }
+
+    await db.collection(coll).doc(id).update({ status: "accepted" });
+
+    if (type === "Proj" && pid) {
+        const uSnap = await db.collection("users").doc(rid).get();
+        const uName = uSnap.exists ? uSnap.data().name : "Member";
+        
+        await db.collection("projects").doc(pid).update({
+            teamMembers: firebase.firestore.FieldValue.arrayUnion({ uid: rid, name: uName })
+        });
+    }
+
+    const context = type === "Proj" ? `Joined Project: ${pname}` : "Connection Accepted";
+    const chatData = await ensureChatAndStart(rid, context);
+    openChat(chatData.id, chatData.user);
+
+  } catch (err) {
+    console.error(err);
+    alert("Error handling request: " + err.message);
+    if(reqEl) reqEl.style.opacity = "1";
+  }
+};
+
+// 8. SAFE CHAT CREATION
+async function ensureChatAndStart(targetId, initialMsg) {
+  const chatId = [me.uid, targetId].sort().join("_");
+  const chatRef = db.collection("chats").doc(chatId);
+  const chatSnap = await chatRef.get();
+
+  const tDoc = await db.collection("users").doc(targetId).get();
+  const tUser = tDoc.exists ? tDoc.data() : {name:"User", profilePictureUrl:null};
+  const tInfo = { name: tUser.name, photoURL: tUser.profilePictureUrl || null };
+
+  if (!chatSnap.exists) {
+    await chatRef.set({
+      participants: [me.uid, targetId],
+      participantInfo: {
+        [me.uid]: { name: me.name, photoURL: me.profilePictureUrl || null },
+        [targetId]: tInfo
+      },
+      lastMessage: initialMsg,
+      lastSenderId: "system",
+      lastMessageTimestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    await chatRef.collection("messages").add({
+      text: "System: " + initialMsg,
+      senderId: "system",
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }
+  return { id: chatId, user: tInfo };
+}
+
+// 9. CHAT INTERFACE
+function openChat(id, info) {
+  activeChat = id;
+  document.body.classList.add("show-chat");
+  
+  document.getElementById("chatName").textContent = info.name;
+  const av = document.getElementById("chatAvatar");
+  av.style.opacity = 1;
+  av.innerHTML = info.photoURL ? `<img src="${info.photoURL}">` : (info.name?.[0] || "?");
+  
+  document.getElementById("text").disabled = false;
+  document.getElementById("send").disabled = false;
+  
+  const box = document.getElementById("messages");
+  box.innerHTML = "";
+  
+  db.collection("chats").doc(id).collection("messages").orderBy("timestamp")
+    .onSnapshot(s => {
+      box.innerHTML = "";
+      s.forEach(m => {
+        const d = m.data();
+        const isMe = d.senderId === me.uid;
+        const isSys = d.senderId === "system";
+        
+        const div = document.createElement("div");
+        div.className = isSys ? "msg system" : (isMe ? "msg sent" : "msg received");
+        if(isSys) div.style.justifyContent = "center";
+
+        let content = d.text || "";
+        if(d.type === "image") content = `<img src="${d.url}" onclick="window.open('${d.url}')">`;
+        else if(d.type === "file") content = `<a href="${d.url}" target="_blank" style="color:white;text-decoration:underline">Download File</a>`;
+        
+        div.innerHTML = isSys 
+          ? `<small style="color:#8b949e;font-style:italic;margin:1rem 0;display:block">${d.text}</small>`
+          : `<div class="bubble">${content}</div>`;
+          
+        box.appendChild(div);
+      });
+      box.scrollTop = box.scrollHeight;
+    });
+}
+
+// 10. SEND MESSAGE
+document.getElementById("send").onclick = sendMessage;
+document.getElementById("text").addEventListener("keydown", e => e.key === "Enter" && sendMessage());
+
+function sendMessage() {
+  const txt = document.getElementById("text");
+  if (!txt.value.trim() || !activeChat) return;
+
+  db.collection("chats").doc(activeChat).collection("messages").add({
+    text: txt.value,
+    senderId: me.uid,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  
+  db.collection("chats").doc(activeChat).update({
+    lastMessage: txt.value,
+    lastSenderId: me.uid, // Track who sent it for notifications
+    lastMessageTimestamp: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  txt.value = "";
+}
+
+// 11. AUTO CONNECT
+async function handleAutoConnect(targetId) {
+  const chatData = await ensureChatAndStart(targetId, "Connection started");
+  openChat(chatData.id, chatData.user);
+  window.history.replaceState({}, document.title, "message.html");
+}
+
+// 12. UPLOAD
+function setupUpload() {
+  widget = cloudinary.createUploadWidget({
+    cloudName: "di8j321kc", uploadPreset: "project_files_v2", resourceType: "auto", maxFileSize: 10000000
+  }, (e, r) => {
+    if (r?.event === "success") {
+      const type = r.info.resource_type === "image" ? "image" : "file";
+      db.collection("chats").doc(activeChat).collection("messages").add({
+        type: type,
+        url: r.info.secure_url,
+        senderId: me.uid,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      // Update last message so notification triggers
+      db.collection("chats").doc(activeChat).update({
+        lastMessage: type === "image" ? "Sent an image" : "Sent a file",
+        lastSenderId: me.uid,
+        lastMessageTimestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+  });
+}
+document.getElementById("attach").onclick = () => activeChat && widget.open();
+
+window.closeChat = () => document.body.classList.remove("show-chat");
+document.getElementById("logout").onclick = () => auth.signOut().then(() => location.href = "login.html");
+</script>
+</body>
+</html>
