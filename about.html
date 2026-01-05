@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Script2Cinema</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Global Styles & Variables --- */
+        :root {
+            --primary-color: #FF8C00;
+            --dark-bg: #0a0a0a;
+            --medium-bg: #1a1a1a;
+            --light-text: #f0f0f0;
+            --dark-text: #a0a0a0;
+            --font-family: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            position: relative; /* To keep content above the background */
+            z-index: 1;
+        }
+        
+        h1, h2, h3 {
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* --- Header & Navigation --- */
+        header {
+            background-color: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            height: 100px;
+            width: auto;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--light-text);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-color);
+        }
+        
+        .nav-buttons .btn {
+            margin-left: 1rem;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .btn-outline {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        /* --- Page Wrapper for Background --- */
+        .about-page-wrapper {
+            position: relative;
+            padding-top: 120px; /* Space for fixed header */
+        }
+        .about-page-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('sc5.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Parallax effect */
+            z-index: 0; /* Puts the background behind the content */
+        }
+
+        /* --- About Us Hero Section Specific Styles --- */
+        .about-hero {
+            height: 80vh; /* Adjusted height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+        }
+
+        .about-content {
+            max-width: 800px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .about-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .about-content p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--light-text);
+        }
+
+        .about-content .btn {
+            margin-top: 1.5rem;
+        }
+
+        /* --- Vision & Mission Section --- */
+        .vision-mission {
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .vision-mission h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .vision-mission .section-description {
+            max-width: 900px;
+            margin: 0 auto 3rem;
+            color: var(--dark-text);
+            font-size: 1.1rem;
+        }
+
+        .vm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .vm-card {
+            background-color: rgba(26, 26, 26, 0.8); /* Semi-transparent background */
+            backdrop-filter: blur(5px);
+            border-radius: 8px;
+            padding: 2.5rem;
+            text-align: left;
+            border-top: 4px solid var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+
+        .vm-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .vm-card h3 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .vm-card p {
+            color: var(--dark-text);
+            font-size: 1rem;
+        }
+
+        /* --- Contact Info Section --- */
+        #contact-info {
+            background-color: #000;
+            padding: 4rem 2rem;
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .contact-col h3 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+        }
+        .contact-col p, .contact-col a {
+            color: var(--dark-text);
+            line-height: 1.8;
+            text-decoration: none;
+        }
+        .contact-col a:hover {
+            color: var(--primary-color);
+        }
+        .contact-col .footer-logo {
+            max-height: 80px;
+            margin-bottom: 1rem;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background-color: #000;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 900px) {
+            .nav-links {
+                display: none;
+            }
+            .about-content h1 {
+                font-size: 2.5rem;
+            }
+            .about-page-wrapper::before {
+                background-attachment: scroll; /* Disable parallax on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="index.html"><img src="logos.png" alt="Script2Cinema Logo" class="logo"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html" class="active">About Us</a></li>
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="index.html#faq">FAQ</a></li>
+                <li><a href="index.html#testimonials">Creators Say</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <a href="login.html" class="btn btn-outline">Log In</a>
+                <a href="signup.html" class="btn btn-primary">Sign Up</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="about-page-wrapper">
+            <section class="about-hero">
+                <div class="about-content">
+                    <h1>About Script2Cinema</h1>
+                    <p>Script2Cinema is more than just a platform; it's a community where the magic of filmmaking comes alive. We connect aspiring and established creators, offering a dedicated space to collaborate, manage projects, and bring cinematic visions to life.</p>
+                    <a href="signup.html" class="btn btn-primary">Join Our Journey</a>
+                </div>
+            </section>
+
+            <section class="vision-mission">
+                <div class="container">
+                    <h2>Our Story & Mission</h2>
+                    <div class="vm-grid">
+                        <div class="vm-card">
+                            <h3>Our Story</h3>
+                            <p>For too long, filmmakers have faced a fragmented process, relying on word-of-mouth and a patchwork of apps. We knew there had to be a better way. Script2Cinema was created to be the single, dedicated space where creators connect and the entire filmmaking process becomes smoother, more organized, and accessible to everyone.</p>
+                        </div>
+                        <div class="vm-card">
+                            <h3>Our Mission</h3>
+                            <p>To provide a comprehensive, intuitive, and supportive platform that connects filmmakers of all roles, streamlining project management and fostering creative partnerships. We are committed to helping talented individuals find each other and turn their cinematic dreams into reality, from the first draft to the final cut.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+    </main>
+    
+    <section id="contact-info">
+        <div class="contact-grid">
+            <div class="contact-col">
+                <img src="logos.png" alt="Script2Cinema Logo" class="footer-logo">
+                <p>Script2Cinema is a pioneering digital platform designed to connect filmmakers and streamline the creative process from script to screen.</p>
+            </div>
+            <div class="contact-col">
+                <h3>Contact Us</h3>
+                <p>Digital Film City,<br>Pune, Maharashtra - 411001</p><br>
+                <p><strong>Phone:</strong> <a href="tel:+919876543210">+91 98765 43210</a></p>
+                <p><strong>Email:</strong> <a href="mailto:contact@script2cinema.com">contact@script2cinema.com</a></p>
+            </div>
+            <div class="contact-col">
+                <h3>Social Media</h3>
+                <p>Follow us on our social channels to stay updated with the latest news and projects from our community.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Script2Cinema. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>
